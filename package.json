@@ -1,0 +1,29 @@
+{
+  "name": "linguabox",
+  "version": "1.0.0",
+  "description": "Server for LinguaBox project",
+  "main": "linguaServer.js",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lucatran97/LinguaBox.git"
+  },
+  "keywords": [
+    "server",
+    "dialogflow",
+    "api",
+    "speech-to-text"
+  ],
+  "author": "LinguaBox Capstone Group",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lucatran97/LinguaBox/issues"
+  },
+  "homepage": "https://github.com/lucatran97/LinguaBox#readme"
+}
