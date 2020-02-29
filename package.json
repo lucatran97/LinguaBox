@@ -1,26 +1,27 @@
 {
   "name": "linguabox",
   "version": "1.0.0",
-  "description": "Server for LinguaBox project",
-  "main": "linguaServer.js",
+  "description": "The web server of Linguabox",
+  "main": "server.js",
   "dependencies": {
     "express": "^4.17.1"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node server.js",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lucatran97/LinguaBox.git"
   },
   "keywords": [
+    "Linguabox",
     "server",
-    "dialogflow",
-    "api",
-    "speech-to-text"
+    "node.js",
+    "chatbot"
   ],
-  "author": "LinguaBox Capstone Group",
+  "author": "Trung Nguyen",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/lucatran97/LinguaBox/issues"
