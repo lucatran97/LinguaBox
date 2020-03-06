@@ -4,7 +4,11 @@
   "description": "The web server of Linguabox",
   "main": "server.js",
   "dependencies": {
-    "express": "^4.17.1"
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.3",
+    "request": "^2.88.2",
+    "uuidv4": "^6.0.6"
   },
   "devDependencies": {},
   "scripts": {
