@@ -21,7 +21,9 @@ app.get('/login', function (req, res) {
 
 // On localhost:3000/chat
 app.get('/chat', function (req, res) {
-    console.log(microsoftTranslate.translate(req.param("message")));
+    console.log(req.param("message"));
+    microsoftTranslate.translate(req.param("message"));
+    //console.log(microsoftTranslate.translate(req.param("message")));
     //res.send(prepare(microsoftTranslator.translate(req.param("message"))));
 });
 

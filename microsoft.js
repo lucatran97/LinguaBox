@@ -12,13 +12,14 @@ if (!process.env[endpoint_var]) {
 }
 var endpoint = process.env[endpoint_var];
 
-var translate = function(){
+var translate = function(message){
   let options = {
     method: 'POST',
     baseUrl: endpoint,
     url: 'translate',
     qs: {
       'api-version': '3.0',
+      'from': 'es',
       'to': ['en']
     },
     headers: {
@@ -27,12 +28,12 @@ var translate = function(){
       'X-ClientTraceId': uuidv4().toString()
     },
     body: [{
-          'text': 'Me llamo Trung.'
+          'text': message
     }],
     json: true,
 };
   request(options, function(err, res, body){
-    return JSON.stringify(body, null, 4);
+    console.log(JSON.stringify(body, null, 4));
   });
 }
 module.exports.translate = translate;
