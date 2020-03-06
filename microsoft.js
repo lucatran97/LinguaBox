@@ -12,13 +12,14 @@ if (!process.env[endpoint_var]) {
 }
 var endpoint = process.env[endpoint_var];
 
-let options = {
+var translate = function(){
+  let options = {
     method: 'POST',
     baseUrl: endpoint,
     url: 'translate',
     qs: {
       'api-version': '3.0',
-      'to': ['de', 'it']
+      'to': ['en']
     },
     headers: {
       'Ocp-Apim-Subscription-Key': subscriptionKey,
@@ -26,11 +27,12 @@ let options = {
       'X-ClientTraceId': uuidv4().toString()
     },
     body: [{
-          'text': 'Hello World!'
+          'text': 'Me llamo Trung.'
     }],
     json: true,
 };
-
-request(options, function(err, res, body){
-  console.log(JSON.stringify(body, null, 4));
-});
+  request(options, function(err, res, body){
+    return JSON.stringify(body, null, 4);
+  });
+}
+module.exports.translate = translate;
