@@ -6,16 +6,13 @@ const request = require('request');
 
 async function main() {
   // Azure App Service will set process.env.port for you, but we use 3000 in development.
-  const PORT = process.env.PORT || 3000;
+  const PORT = 3000;
   
   // Create the express routes
   let app = express();
   
   app.use(express.static('public'));
   // Change the 404 message modifing the middleware
-  app.use(function(req, res, next) {
-    res.status(404).send("Sorry, that route doesn't exist. Have a nice day :)");
-    });
 
   app.get('/', function (req, res) {
     res.send('<h1>This server is dedicated to the LinguaBox Project</h1>');
@@ -34,6 +31,10 @@ async function main() {
     //console.log(microsoftTranslate.translate(req.param("message")));
     //res.send(prepare(microsoftTranslator.translate(req.param("message"))));
   });
+
+  app.use(function(req, res, next) {
+    res.status(404).send("Sorry, that route doesn't exist. Have a nice day :)");
+    });
 
   // Create the HTTP server.
   let server = http.createServer(app);
