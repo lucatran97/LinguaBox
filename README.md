@@ -2,6 +2,10 @@
 
 <p>This branch is dedicated to the LinguaBox server. It is deployed to Azure cloud app service at http://linguabox.azurewebsites.net/.</p>
 
+## To verify the cloud app service functionality
+  
+<p>Go to https://reqbin.com/ and send a POST request to http://linguabox.azurewebsites.net/chat. Set the content string as follows: {"message": "your_message_in_Spanish_here"}.</p>
+
 ## To run this project
 
 1. Make sure you have Node.js (8.12.x or later) installed.
