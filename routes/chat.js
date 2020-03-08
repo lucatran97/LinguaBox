@@ -1,10 +1,11 @@
 var express = require('express');
 var router = express.Router();
+var microsoftTranslator = require('../microsoft');
 
 /*handle chat post request*/
-router.get('/',function(req, res, next){
+router.get('/',async function(req, res, next){
     if(req.query.message!=undefined){
-    res.send("{\"status\": 200, \"message\"="+req.query.message+"}");
+        microsoftTranslator.translate(req.query.message, res);
     } else {
         res.send("{\"status\": 404, \"message\" = \"Cannot recognize GET request\"}");
     }
