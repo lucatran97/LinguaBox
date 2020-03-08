@@ -14,7 +14,7 @@ router.get('/',async function(req, res, next){
 
 router.post('/',function(req, res, next){
     res.setHeader('Content-Type', 'application/json');
-    if(req.body!=undefined){
+    if(req.body.message!=undefined){
         microsoftTranslator.translate(req.body.message, res);
     } else {
         res.send("{\"status\": 404, \"message\" = \"Cannot recognize POST request\"}");
