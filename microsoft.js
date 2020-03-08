@@ -12,7 +12,7 @@ if (!process.env[endpoint_var]) {
 }
 var endpoint = process.env[endpoint_var];
 
-var translate = function(message){
+var translate = async function(message, sRes){
   let options = {
     method: 'POST',
     baseUrl: endpoint,
@@ -32,8 +32,14 @@ var translate = function(message){
     }],
     json: true,
 };
+  var result; 
   request(options, function(err, res, body){
-    console.log(JSON.stringify(body, null, 4));
+    if(!body[0].translations){
+      sRes.send(JSON.stringify({status:500, message: 'Problem with LinguaBox server and/or Microsoft Translator connection'}));  
+    } else {
+      sRes.send(JSON.stringify({status:200, message: body[0].translations[0].text.replace(/["]+/g, '')}));
+    }
   });
 }
+
 module.exports.translate = translate;

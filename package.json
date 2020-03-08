@@ -1,34 +1,17 @@
 {
-  "name": "linguabox",
-  "version": "1.0.0",
-  "description": "The web server of Linguabox",
-  "main": "server.js",
-  "dependencies": {
-    "body-parser": "^1.19.0",
-    "express": "^4.17.1",
-    "mongoose": "^5.9.3",
-    "request": "^2.88.2",
-    "uuidv4": "^6.0.6"
-  },
-  "devDependencies": {},
+  "name": "azurelingua",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "test": "node server.js",
-    "start": "node server.js"
+    "start": "server.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lucatran97/LinguaBox.git"
-  },
-  "keywords": [
-    "Linguabox",
-    "server",
-    "node.js",
-    "chatbot"
-  ],
-  "author": "Trung Nguyen",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/lucatran97/LinguaBox/issues"
-  },
-  "homepage": "https://github.com/lucatran97/LinguaBox#readme"
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.1",
+    "request": "^2.88.2"
+  }
 }
