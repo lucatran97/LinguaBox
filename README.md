@@ -1,6 +1,6 @@
 # LinguaBox
 
-<p>This branch is dedicated to the LinguaBox server. It is deployed to Azure cloud app service at [Linguabox](http://linguabox.azurewebsites.net/).</p>
+<p>This branch is dedicated to the LinguaBox server. It is deployed to Azure cloud app service at http://linguabox.azurewebsites.net/.</p>
 
 ## To run this project
 
