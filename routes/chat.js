@@ -4,6 +4,7 @@ var microsoftTranslator = require('../microsoft');
 
 /*handle chat post request*/
 router.get('/',async function(req, res, next){
+    res.setHeader('Content-Type', 'application/json');
     if(req.query.message!=undefined){
         microsoftTranslator.translate(req.query.message, res);
     } else {
@@ -12,6 +13,7 @@ router.get('/',async function(req, res, next){
 });
 
 router.post('/',function(req, res, next){
+    res.setHeader('Content-Type', 'application/json');
     if(req.body!=undefined){
         microsoftTranslator.translate(req.body.message, res);
     } else {

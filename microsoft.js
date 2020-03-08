@@ -35,9 +35,9 @@ var translate = async function(message, sRes){
   var result; 
   request(options, function(err, res, body){
     if(!body[0].translations){
-      sRes.send("{\"status\": 500, \"message\" = \"Problem with Linguabox server and/or Microsoft Translation server\"}");  
+      sRes.send(JSON.stringify({status:500, message: 'Problem with LinguaBox server and/or Microsoft Translator connection'}));  
     } else {
-      sRes.send("{\"status\": 200, \"message\" = "+body[0].translations[0].text+"}");
+      sRes.send(JSON.stringify({status:200, message: body[0].translations[0].text.replace(/["]+/g, '')}));
     }
   });
 }
