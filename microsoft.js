@@ -34,7 +34,11 @@ var translate = async function(message, sRes){
 };
   var result; 
   request(options, function(err, res, body){
-    sRes.send("{\"status\": 404, \"message\" = \""+JSON.stringify(body, null, 4)+"\"}");
+    if(!body[0].translations){
+      sRes.send("{\"status\": 500, \"message\" = \"Problem with Linguabox server and/or Microsoft Translation server\"}");  
+    } else {
+      sRes.send("{\"status\": 200, \"message\" = "+body[0].translations[0].text+"}");
+    }
   });
 }
 
