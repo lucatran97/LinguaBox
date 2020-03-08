@@ -1,38 +1,90 @@
-// server.js
-var express = require('express');
-var microsoftTranslate = require('./microsoft.js');
+#!/usr/bin/env node
 
-console.log(microsoftTranslate);
+/**
+ * Module dependencies.
+ */
 
-var app = express();
+var app = require('./app');
+var debug = require('debug')('azurelingua:server');
+var http = require('http');
 
-var PORT = 3000;
+/**
+ * Get port from environment and store in Express.
+ */
 
-// on the request to root (localhost:3000/)
-app.get('/', function (req, res) {
-    res.send('<h1>This server is dedicated to the LinguaBox Project</h1>');
-});
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
 
-// On localhost:3000/login
-app.get('/login', function (req, res) {
-    console.log(req.params("id"));
-    res.send('<h1>This is called when an user logs in</h1>');
-});
+/**
+ * Create HTTP server.
+ */
 
-// On localhost:3000/chat
-app.get('/chat', function (req, res) {
-    console.log(req.param("message"));
-    microsoftTranslate.translate(req.param("message"));
-    //console.log(microsoftTranslate.translate(req.param("message")));
-    //res.send(prepare(microsoftTranslator.translate(req.param("message"))));
-});
+var server = http.createServer(app);
 
-// Change the 404 message modifing the middleware
-app.use(function(req, res, next) {
-    res.status(404).send("Sorry, that route doesn't exist. Have a nice day :)");
-});
+/**
+ * Listen on provided port, on all network interfaces.
+ */
 
-// Start the server in the port 3000
-app.listen(PORT, function () {
-    console.log('Example app listening on port 3000.');
-});
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
