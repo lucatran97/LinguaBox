@@ -1,5 +1,4 @@
 <resources>
     <string name="app_name">LinguaBox</string>
-    <string name="chat_button">Send</string>
-    <string name="chatbox_fill">Enter your message here...</string>
+    <string name="input_placeholder">Write a message</string>
 </resources>

@@ -16,7 +16,6 @@ public class HttpRequest {
     private static final MediaType JSON
             = MediaType.get("application/json; charset=utf-8");
     //Our OkHttpClient object
-    private OkHttpClient client = new OkHttpClient();
 
     /**
      * This private function provides the basic POST request to a URL. The data to be posted is a JSON string
@@ -25,7 +24,8 @@ public class HttpRequest {
      * @return A response string
      * @throws IOException
      */
-    private String post(String url, String json) throws IOException {
+    private static String post(String url, String json) throws IOException {
+        OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(json, JSON);
         Request request = new Request.Builder()
                 .url(url)
@@ -33,6 +33,18 @@ public class HttpRequest {
                 .build();
         try (Response response = client.newCall(request).execute()) {
             return response.body().string();
+        }
+    }
+
+    private static String parseMessage(String message){
+        return "{\"message\": \""+message+"\"}";
+    }
+
+    public static String sendMessage(String sessionID, String message){
+        try {
+            return post("http://linguabox.azurewebsites.net/chat", parseMessage(message));
+        } catch (IOException e) {
+            return "Cannot send POST request";
         }
     }
 
@@ -47,10 +59,5 @@ public class HttpRequest {
             return response.body().string();
         }
     }*/
-
-    public String sendMessage(String sessionID, String message){
-        //return post(...,...);
-        return null;
-    }
 
 }
