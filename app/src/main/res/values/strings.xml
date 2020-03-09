@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">LinguaBox</string>
+    <string name="input_placeholder">Write a message</string>
 </resources>
