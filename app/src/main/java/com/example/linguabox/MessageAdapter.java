@@ -10,9 +10,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handle displaying messages
+ */
 public class MessageAdapter extends BaseAdapter {
 
         List<Message> messages = new ArrayList<>();
@@ -75,23 +79,4 @@ public class MessageAdapter extends BaseAdapter {
         public View avatar;
         public TextView name;
         public TextView messageBody;
-    }
-
-// Message.java
-    class Message {
-        private String text; // message body
-        private boolean belongsToCurrentUser; // is this message sent by us?
-
-        public Message(String text, boolean belongsToCurrentUser) {
-            this.text = text;
-            this.belongsToCurrentUser = belongsToCurrentUser;
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        public boolean isBelongsToCurrentUser() {
-            return belongsToCurrentUser;
-        }
     }

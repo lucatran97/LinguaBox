@@ -1,7 +1,10 @@
 package com.example.linguabox;
 
-import java.io.IOException;
+import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.io.IOException;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -28,11 +31,16 @@ public class HttpRequest {
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(json, JSON);
         Request request = new Request.Builder()
+                .header("Content-Type", "application/json")
                 .url(url)
                 .post(body)
                 .build();
         try (Response response = client.newCall(request).execute()) {
-            return response.body().string();
+            JSONObject mainObject = new JSONObject(response.body().string());
+            return mainObject.getString("message");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return "Invalid JSON response.";
         }
     }
 
@@ -42,8 +50,9 @@ public class HttpRequest {
 
     public static String sendMessage(String sessionID, String message){
         try {
-            return post("http://linguabox.azurewebsites.net/chat", parseMessage(message));
+            return post("https://linguabox.azurewebsites.net/chat", parseMessage(message));
         } catch (IOException e) {
+            e.printStackTrace();
             return "Cannot send POST request";
         }
     }
