@@ -6,7 +6,7 @@ var microsoftTranslator = require('../microsoft');
 router.get('/',async function(req, res, next){
     res.setHeader('Content-Type', 'application/json');
     if(req.query.message!=undefined){
-        microsoftTranslator.translate(req.query.message, res);
+        microsoftTranslator.translate(encodeURI(req.query.message), res);
     } else {
         res.send("{\"status\": 404, \"message\" = \"Cannot recognize GET request. Maybe missing message parameter?\"}");
     }
@@ -14,8 +14,8 @@ router.get('/',async function(req, res, next){
 
 router.post('/',function(req, res, next){
     res.setHeader('Content-Type', 'application/json');
-    if(req.body.message!=undefined){
-        microsoftTranslator.translate(req.body.message, res);
+    if((req.body!=undefined)&&(req.body.message!=undefined)){
+        microsoftTranslator.translate(encodeURI(req.body.message), res);
     } else {
         res.send("{\"status\": 404, \"message\" = \"Cannot recognize POST request\"}");
     }

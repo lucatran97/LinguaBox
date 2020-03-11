@@ -28,7 +28,7 @@ var translate = async function(message, sRes){
       'X-ClientTraceId': uuidv4().toString()
     },
     body: [{
-          'text': message
+          'text': decodeURI(message)
     }],
     json: true,
 };
