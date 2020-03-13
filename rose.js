@@ -1,5 +1,6 @@
 const dialogflow = require('dialogflow');
-const LANGUAGE_CODE = 'en-US' 
+const LANGUAGE_CODE = 'en-US'
+var microsoftTranslator = require('./microsoft');
 
 class DialogFlow {
 	constructor (projectId) {
@@ -17,8 +18,19 @@ class DialogFlow {
 		this.sessionClient = new dialogflow.SessionsClient(config);
 	}
 
+	async chatbotQuery(textMessage, sessionId, sRes){
+		let responses = await this.sendTextMessageToDialogFlow(decodeURI(textMessage), sessionId);
+		if((responses!=undefined)&&(responses[0].queryResult.fulfillmentText!=undefined)){
+			console.log(responses);
+			//sRes.send(JSON.stringify({status:200, message: responses[0].queryResult.fulfillmentText}));
+		} else {
+			//sRes.send(JSON.stringify({status:500, message: 'Problem with LinguaBox server and/or chatbot connection'})); 
+		}
+	}
+
 	async sendTextMessageToDialogFlow(textMessage, sessionId) {
 		// Define session path
+		console.log(this.projectId);
 		const sessionPath = this.sessionClient.sessionPath(this.projectId, sessionId);
 		// The text query request.
 		const request = {
@@ -43,5 +55,19 @@ class DialogFlow {
 	}
 }
 
-var df = new DialogFlow('sa1-lmtvhu');
-df.sendTextMessageToDialogFlow('hello', '123456789');
+var inputHandler = {
+ 	df: new DialogFlow('sa1-lmtvhu'),
+	processChat: async function(message, sessionId, res){
+		microsoftTranslator.translate(message, sessionId, res);
+	},
+	onPreTransateSuccess: async function(message, sessionId, res){
+		df.chatbotQuery(message, sessionId, res);
+	},
+	onChatbotSuccess: async function(message, sessionId, res){
+		microsoftTranslator.translate(message, sessionId, res);
+	},
+	onPostTranslateSuccess: async function(message, sessionId, res){
+		res.
+	}
+}
+module.exports.processChat = inputHandler.processChat;
