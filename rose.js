@@ -21,16 +21,16 @@ class DialogFlow {
 	async chatbotQuery(textMessage, sessionId, sRes){
 		let responses = await this.sendTextMessageToDialogFlow(decodeURI(textMessage), sessionId);
 		if((responses!=undefined)&&(responses[0].queryResult.fulfillmentText!=undefined)){
-			console.log(responses);
-			//sRes.send(JSON.stringify({status:200, message: responses[0].queryResult.fulfillmentText}));
+			//console.log(responses);
+			inputHandler.onChatbotSuccess(responses[0].queryResult.fulfillmentText, sessionId, sRes);
 		} else {
-			//sRes.send(JSON.stringify({status:500, message: 'Problem with LinguaBox server and/or chatbot connection'})); 
+			sRes.send(JSON.stringify({message: 'Problem with LinguaBox server and/or chatbot connection.'})); 
 		}
 	}
 
 	async sendTextMessageToDialogFlow(textMessage, sessionId) {
 		// Define session path
-		console.log(this.projectId);
+		//console.log(this.projectId);
 		const sessionPath = this.sessionClient.sessionPath(this.projectId, sessionId);
 		// The text query request.
 		const request = {
@@ -45,7 +45,7 @@ class DialogFlow {
 		try {
 			let responses = await this.sessionClient.detectIntent(request);		
 			console.log('DialogFlow.sendTextMessageToDialogFlow: Detected intent');
-			console.log(responses);
+			//console.log(responses);
 			return responses;
 		}
 		catch(err) {
@@ -55,19 +55,20 @@ class DialogFlow {
 	}
 }
 
+var df = new DialogFlow('sa1-lmtvhu');
+
 var inputHandler = {
- 	df: new DialogFlow('sa1-lmtvhu'),
 	processChat: async function(message, sessionId, res){
-		microsoftTranslator.translate(message, sessionId, res);
+		microsoftTranslator.translate(message, "PRE", sessionId, res);
 	},
 	onPreTransateSuccess: async function(message, sessionId, res){
 		df.chatbotQuery(message, sessionId, res);
 	},
 	onChatbotSuccess: async function(message, sessionId, res){
-		microsoftTranslator.translate(message, sessionId, res);
+		microsoftTranslator.translate(message, "POST", sessionId, res);
 	},
-	onPostTranslateSuccess: async function(message, sessionId, res){
-		res.
+	onPostTranslateSuccess: async function(rMessage, rTranslation, sessionId, res){
+		res.send(JSON.stringify({message: rMessage, translation: rTranslation}));
 	}
 }
-module.exports.processChat = inputHandler.processChat;
+module.exports.inputHandler = inputHandler;
