@@ -1,5 +1,6 @@
 const request = require('request');
 const uuidv4 = require('uuid/v4');
+const rose = require('./rose');
 
 var key_var = 'TRANSLATOR_TEXT_SUBSCRIPTION_KEY';
 if (!process.env[key_var]) {
@@ -12,15 +13,18 @@ if (!process.env[endpoint_var]) {
 }
 var endpoint = process.env[endpoint_var];
 
-var translate = async function(message, sRes){
+var learning = 'es';
+var translate = async function(message, stage, sessionID, sRes){
+  var base = (stage==="PRE")?learning:'en';
+  var target = (stage==="PRE")?'en':learning;
   let options = {
     method: 'POST',
     baseUrl: endpoint,
     url: 'translate',
     qs: {
       'api-version': '3.0',
-      'from': 'es',
-      'to': ['en']
+      'from': base,
+      'to': [target]
     },
     headers: {
       'Ocp-Apim-Subscription-Key': subscriptionKey,
@@ -28,16 +32,20 @@ var translate = async function(message, sRes){
       'X-ClientTraceId': uuidv4().toString()
     },
     body: [{
-          'text': message
+          'text': decodeURI(message)
     }],
     json: true,
 };
-  var result; 
   request(options, function(err, res, body){
     if(!body[0].translations){
-      sRes.send(JSON.stringify({status:500, message: 'Problem with LinguaBox server and/or Microsoft Translator connection'}));  
+      sRes.send(JSON.stringify({message: "Cannot evoke Microsoft Translator."}));
+      console.log("Cannot evoke Microsoft API at stage: " + stage);
     } else {
-      sRes.send(JSON.stringify({status:200, message: body[0].translations[0].text.replace(/["]+/g, '')}));
+      if(stage==="PRE"){
+        rose.inputHandler.onPreTransateSuccess(body[0].translations[0].text.replace(/["]+/g, ''), sessionID, sRes);
+      } else {
+        rose.inputHandler.onPostTranslateSuccess(body[0].translations[0].text.replace(/["]+/g, ''), message, sessionID, sRes);
+      }
     }
   });
 }
