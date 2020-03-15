@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -32,6 +33,22 @@ public class ChatActivity extends Activity {
         messageAdapter = new MessageAdapter(this);
         messagesView = findViewById(R.id.messages_view);
         messagesView.setAdapter(messageAdapter);
+        messagesView.setLongClickable(true);
+
+        //LONG CLICK FUNCTION HERE
+        messagesView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+                                           int pos, long id) {
+                // TODO Auto-generated method stub
+
+                Log.v("long clicked","pos: " + pos);
+                Log.v("item", arg0.getItemAtPosition(pos).toString());
+
+                return true;
+            }
+        });
+
         es = Executors.newSingleThreadExecutor();
     }
 
