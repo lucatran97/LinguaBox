@@ -13,8 +13,10 @@ if (!process.env[endpoint_var]) {
 }
 var endpoint = process.env[endpoint_var];
 
-var learning = 'es';
-var translate = async function(message, stage, sessionID, sRes){
+var learning;
+var translate = async function(message, stage, sessionID, language, sRes){
+  learning = language?language:'es';
+  console.log(learning);
   var base = (stage==="PRE")?learning:'en';
   var target = (stage==="PRE")?'en':learning;
   let options = {
@@ -42,9 +44,9 @@ var translate = async function(message, stage, sessionID, sRes){
       console.log("Cannot evoke Microsoft API at stage: " + stage);
     } else {
       if(stage==="PRE"){
-        rose.inputHandler.onPreTransateSuccess(body[0].translations[0].text.replace(/["]+/g, ''), sessionID, sRes);
+        rose.inputHandler.onPreTransateSuccess(body[0].translations[0].text.replace(/["]+/g, ''), sessionID, language, sRes);
       } else {
-        rose.inputHandler.onPostTranslateSuccess(body[0].translations[0].text.replace(/["]+/g, ''), message, sessionID, sRes);
+        rose.inputHandler.onPostTranslateSuccess(body[0].translations[0].text.replace(/["]+/g, ''), message, sRes);
       }
     }
   });
