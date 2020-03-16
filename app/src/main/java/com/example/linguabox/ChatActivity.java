@@ -9,19 +9,24 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class ChatActivity extends Activity {
+public class ChatActivity extends FragmentActivity implements HelperDialogFragment.HelperDialogListener{
     private EditText editText;
     private MessageAdapter messageAdapter;
     private ListView messagesView;
     private ExecutorService es;
     String language;
     String email;
+    int selectedMessagePos;
+    Message selectedMessage;
     /**
      * First function called on activity creation
      *
@@ -49,9 +54,9 @@ public class ChatActivity extends Activity {
                 // TODO Auto-generated method stub
                 Message temp = (Message) arg0.getItemAtPosition(pos);
                 if (!temp.isBelongsToCurrentUser()){
-                    temp.swapDisplay();
-                    messageAdapter.set(pos,temp);
-                    messagesView.setSelection(pos);
+                    selectedMessage = temp;
+                    selectedMessagePos = pos;
+                    showCustomDialog();
                 }
                 return true;
             }
@@ -112,5 +117,31 @@ public class ChatActivity extends Activity {
         public Message call() throws Exception {
             return HttpRequest.sendMessage(email, message, language);
         }
+    }
+
+    public void showCustomDialog() {
+        // Create an instance of the dialog fragment and show it
+        DialogFragment dialog = new HelperDialogFragment();
+        dialog.show(getSupportFragmentManager(), "HelperDialogFragment");
+    }
+
+    // The dialog fragment receives a reference to this Activity through the
+    // Fragment.onAttach() callback, which it uses to call the following methods
+    // defined by the NoticeDialogFragment.NoticeDialogListener interface
+    @Override
+    public void onTranslate(DialogFragment dialog) {
+        selectedMessage.swapDisplay();
+        messageAdapter.set(selectedMessagePos,selectedMessage);
+        messagesView.setSelection(selectedMessagePos);
+    }
+
+    @Override
+    public void onListen(DialogFragment dialog) {
+
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        dialog.dismiss();
     }
 }

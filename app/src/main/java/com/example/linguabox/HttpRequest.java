@@ -40,7 +40,7 @@ public class HttpRequest {
             return new Message(mainObject.getString("message"), mainObject.getString("translation"), false);
         } catch (JSONException e) {
             e.printStackTrace();
-            return new Message("The program encountered invalid response. If you just begin the chat, please wait a few seconds for the server to be online", null, false);
+            return new Message("The program received invalid response from the server.", null, false);
         }
     }
 
@@ -53,7 +53,7 @@ public class HttpRequest {
             return post("https://linguabox.azurewebsites.net/chat", parseMessage(message, email, language));
         } catch (IOException e) {
             e.printStackTrace();
-            return new Message("Cannot connect to the server. Please check your connection and try again.", null, false);
+            return new Message("Cannot connect to the server. If you just begin the chat, please wait a few seconds for the server to be online.", null, false);
         }
     }
 }
