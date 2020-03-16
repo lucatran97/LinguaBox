@@ -65,9 +65,9 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
             Log.w("Sign In Success", "Sign In Successful !!");
             Toast.makeText(MainActivity.this, "SIGN IN SUCCESSFUL !!", Toast.LENGTH_LONG).show();
+            assert account != null;
             String name = account.getGivenName();
             String email = account.getEmail();
             Intent chooseLanguage = new Intent(getApplicationContext(), SelectLanguageActivity.class);
