@@ -18,11 +18,11 @@ class DialogFlow {
 		this.sessionClient = new dialogflow.SessionsClient(config);
 	}
 
-	async chatbotQuery(textMessage, sessionId, sRes){
+	async chatbotQuery(textMessage, sessionId, language, sRes){
 		let responses = await this.sendTextMessageToDialogFlow(decodeURI(textMessage), sessionId);
 		if((responses!=undefined)&&(responses[0].queryResult.fulfillmentText!=undefined)){
 			//console.log(responses);
-			inputHandler.onChatbotSuccess(responses[0].queryResult.fulfillmentText, sessionId, sRes);
+			inputHandler.onChatbotSuccess(responses[0].queryResult.fulfillmentText, sessionId, language, sRes);
 		} else {
 			sRes.send(JSON.stringify({message: 'Problem with LinguaBox server and/or chatbot connection.'})); 
 		}
@@ -58,16 +58,16 @@ class DialogFlow {
 var df = new DialogFlow('sa1-lmtvhu');
 
 var inputHandler = {
-	processChat: async function(message, sessionId, res){
-		microsoftTranslator.translate(message, "PRE", sessionId, res);
+	processChat: async function(message, sessionId, language, res){
+		microsoftTranslator.translate(message, "PRE", sessionId, language, res);
 	},
-	onPreTransateSuccess: async function(message, sessionId, res){
-		df.chatbotQuery(message, sessionId, res);
+	onPreTransateSuccess: async function(message, sessionId, language, res){
+		df.chatbotQuery(message, sessionId, language, res);
 	},
-	onChatbotSuccess: async function(message, sessionId, res){
-		microsoftTranslator.translate(message, "POST", sessionId, res);
+	onChatbotSuccess: async function(message, sessionId, language, res){
+		microsoftTranslator.translate(message, "POST", sessionId, language, res);
 	},
-	onPostTranslateSuccess: async function(rMessage, rTranslation, sessionId, res){
+	onPostTranslateSuccess: async function(rMessage, rTranslation, res){
 		res.send(JSON.stringify({message: rMessage, translation: rTranslation}));
 	}
 }
