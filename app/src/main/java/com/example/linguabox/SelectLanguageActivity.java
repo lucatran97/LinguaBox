@@ -2,14 +2,15 @@ package com.example.linguabox;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 public class SelectLanguageActivity extends Activity implements AdapterView.OnItemSelectedListener{
-    String[] countryNames={"Spanish","Chinese","German"};
+    String[] countryNames = {"Spanish","Chinese (Simplified)","German"};
+    String[] countryCodes = {"es", "zh-Hans", "de"};
+    String chosenCode = "es";
     int flags[] = {R.drawable.spanish, R.drawable.chinese, R.drawable.german};
 
     @Override
@@ -20,7 +21,7 @@ public class SelectLanguageActivity extends Activity implements AdapterView.OnIt
         Spinner spin = (Spinner) findViewById(R.id.simpleSpinner);
         spin.setOnItemSelectedListener(this);
 
-        LanguageSelectAdapter customAdapter = new LanguageSelectAdapter(getApplicationContext(),flags,countryNames);
+        LanguageSelectAdapter customAdapter = new LanguageSelectAdapter(getApplicationContext(),flags,countryNames, countryCodes);
         spin.setAdapter(customAdapter);
     }
 
@@ -28,7 +29,8 @@ public class SelectLanguageActivity extends Activity implements AdapterView.OnIt
     //Performing action onItemSelected and onNothing selected
     @Override
     public void onItemSelected(AdapterView<?> arg0, View arg1, int position,long id) {
-        Toast.makeText(getApplicationContext(), countryNames[position], Toast.LENGTH_LONG).show();
+        chosenCode = countryCodes[position];
+        Log.v("CODE", chosenCode);
     }
 
     @Override

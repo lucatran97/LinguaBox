@@ -12,13 +12,19 @@ public class LanguageSelectAdapter extends BaseAdapter {
     Context context;
     int flags[];
     String[] countryNames;
+    String[] countryCodes;
     LayoutInflater inflter;
 
-    public LanguageSelectAdapter(Context applicationContext, int[] flags, String[] countryNames) {
+    public LanguageSelectAdapter(Context applicationContext, int[] flags, String[] countryNames, String[] countryCodes) {
         this.context = applicationContext;
         this.flags = flags;
         this.countryNames = countryNames;
+        this.countryCodes = countryCodes;
         inflter = (LayoutInflater.from(applicationContext));
+    }
+
+    public String getCountryCode(int i){
+        return countryCodes[i];
     }
 
     @Override
@@ -27,8 +33,8 @@ public class LanguageSelectAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int i) {
-        return null;
+    public String getItem(int i) {
+        return getCountryCode(i);
     }
 
     @Override
