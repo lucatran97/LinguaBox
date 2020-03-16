@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">LinguaBox</string>
     <string name="input_placeholder">Write a message</string>
+    <string name="welcome">Welcome to LinguaBox</string>
+    <string name="hello">Hello</string>
+    <string name="select_language">Select your language</string>
+    <string name="continue_button">Continue</string>
+    <string name="translate">Translate</string>
+    <string name="listen">Listen</string>
+    <string name="cancel">Cancel</string>
+    <string name="translation_button_description">Translate</string>
+    <string name="listen_button_description">Listen</string>
 </resources>
