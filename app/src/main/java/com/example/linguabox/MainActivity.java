@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         signInButton = findViewById(R.id.sign_in_button);
 
         // Setting Up Google to Require Email & Basic Info
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -64,11 +65,18 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
             Log.w("Sign In Success", "Sign In Successful !!");
             Toast.makeText(MainActivity.this, "SIGN IN SUCCESSFUL !!", Toast.LENGTH_LONG).show();
+            assert account != null;
+            String name = account.getGivenName();
+            String email = account.getEmail();
+            Intent chooseLanguage = new Intent(getApplicationContext(), SelectLanguageActivity.class);
+            chooseLanguage.putExtra("name", name);
+            chooseLanguage.putExtra("email", email);
+            startActivity(chooseLanguage);
 
         } catch (ApiException e) {
+            e.printStackTrace();
             Log.w("Sign In Error", "Sign In Failed. Failed Code =" + e.getStatusCode());
             Toast.makeText(MainActivity.this, "LOG IN FAILED", Toast.LENGTH_LONG).show();
         }
