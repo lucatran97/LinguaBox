@@ -3,6 +3,7 @@ package com.example.linguabox;
 // Message.java
 public class Message {
     private String text; // message body
+    private String translation;
     private boolean belongsToCurrentUser; // is this message sent by us?
 
     /**
@@ -10,9 +11,10 @@ public class Message {
      * @param text the message in String format
      * @param belongsToCurrentUser to determine UI placement
      */
-    public Message(String text, boolean belongsToCurrentUser) {
+    public Message(String text, String translation, boolean belongsToCurrentUser) {
         this.text = text;
         this.belongsToCurrentUser = belongsToCurrentUser;
+        this.translation = translation;
     }
 
     /**
@@ -21,6 +23,12 @@ public class Message {
      */
     public String getText() {
         return text;
+    }
+
+    public void swapDisplay() {
+        String temp = this.text;
+        this.text = this.translation;
+        this.translation = temp;
     }
 
     /**

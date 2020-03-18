@@ -27,7 +27,7 @@ public class HttpRequest {
      * @return A response string
      * @throws IOException
      */
-    private static String post(String url, String json) throws IOException {
+    private static Message post(String url, String json) throws IOException {
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(json, JSON);
         Request request = new Request.Builder()
@@ -37,36 +37,23 @@ public class HttpRequest {
                 .build();
         try (Response response = client.newCall(request).execute()) {
             JSONObject mainObject = new JSONObject(response.body().string());
-            return mainObject.getString("message");
+            return new Message(mainObject.getString("message"), mainObject.getString("translation"), false);
         } catch (JSONException e) {
             e.printStackTrace();
-            return "Invalid JSON response.";
+            return new Message("The program received invalid response from the server.", null, false);
         }
     }
 
-    private static String parseMessage(String message){
-        return "{\"message\": \""+message+"\"}";
+    private static String parseMessage(String message, String email, String language){
+        return "{\"message\": \""+message+"\", \"email\": \""+email+"\", \"language\": \""+language+"\"}";
     }
 
-    public static String sendMessage(String sessionID, String message){
+    public static Message sendMessage(String email, String message, String language){
         try {
-            return post("https://linguabox.azurewebsites.net/chat", parseMessage(message));
+            return post("https://linguabox.azurewebsites.net/chat", parseMessage(message, email, language));
         } catch (IOException e) {
             e.printStackTrace();
-            return "Cannot send POST request";
+            return new Message("Cannot connect to the server. If you just begin the chat, please wait a few seconds for the server to be online.", null, false);
         }
     }
-
-    //Might be added later for GET request
-    /*private String get(String url, String json) throws IOException {
-        RequestBody body = RequestBody.create(json, JSON);
-        Request request = new Request.Builder()
-                .url(url)
-                .get()
-                .build();
-        try (Response response = client.newCall(request).execute()) {
-            return response.body().string();
-        }
-    }*/
-
 }
