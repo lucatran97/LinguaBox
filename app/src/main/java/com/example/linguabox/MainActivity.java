@@ -1,4 +1,4 @@
-package com.example.linguabox;
+package com.microsoft.cognitiveservices.speech.samples.quickstart;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,12 +17,37 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import com.microsoft.cognitiveservices.speech.ResultReason;
+import com.microsoft.cognitiveservices.speech.SpeechConfig;
+import com.microsoft.cognitiveservices.speech.SpeechSynthesisCancellationDetails;
+import com.microsoft.cognitiveservices.speech.SpeechSynthesisResult;
+import com.microsoft.cognitiveservices.speech.SpeechSynthesizer;
+
+import static android.Manifest.permission.*;
+
+
 public class MainActivity extends AppCompatActivity {
 
     // Set Up Constants
     int SIGNED_IN = 0;
     GoogleSignInClient client;
     SignInButton signInButton;
+
+    // Replace below with your own subscription key
+    private static String speechSubscriptionKey = "9d1cb6dc1aff4b6ab5ab311b84f642a5";
+    // Replace below with your own service region (e.g., "westus").
+    private static String serviceRegion = "eastus";
+
+    private SpeechConfig speechConfig;
+    private SpeechSynthesizer synthesizer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +69,19 @@ public class MainActivity extends AppCompatActivity {
 
         signInButton.setOnClickListener((view)-> {signIn();});
 
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Note: we need to request the permissions
+        int requestCode = 5; // unique code for the permission request
+        ActivityCompat.requestPermissions(MainActivity.this, new String[]{INTERNET}, requestCode);
+
+        // Initialize speech synthesizer and its dependencies
+        speechConfig = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
+        assert(speechConfig != null);
+
+        synthesizer = new SpeechSynthesizer(speechConfig);
+        assert(synthesizer != null);
     }
 
     private void signIn() {
@@ -79,6 +117,44 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             Log.w("Sign In Error", "Sign In Failed. Failed Code =" + e.getStatusCode());
             Toast.makeText(MainActivity.this, "LOG IN FAILED", Toast.LENGTH_LONG).show();
+        }
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // Release speech synthesizer and its dependencies
+        synthesizer.close();
+        speechConfig.close();
+    }
+
+    public void onSpeechButtonClicked(View v) {
+        TextView outputMessage = this.findViewById(R.id.outputMessage);
+        EditText speakText = this.findViewById(R.id.speakText);
+
+        try {
+            // Note: this will block the UI thread, so eventually, you want to register for the event
+            SpeechSynthesisResult result = synthesizer.SpeakText(speakText.getText().toString());
+            assert(result != null);
+
+            if (result.getReason() == ResultReason.SynthesizingAudioCompleted) {
+                outputMessage.setText("Speech synthesis succeeded.");
+            }
+            else if (result.getReason() == ResultReason.Canceled) {
+                String cancellationDetails =
+                        SpeechSynthesisCancellationDetails.fromResult(result).toString();
+                outputMessage.setText("Error synthesizing. Error detail: " +
+                        System.lineSeparator() + cancellationDetails +
+                        System.lineSeparator() + "Did you update the subscription info?");
+            }
+
+            result.close();
+        } catch (Exception ex) {
+            Log.e("SpeechSDKDemo", "unexpected " + ex.getMessage());
+            assert(false);
         }
     }
 
