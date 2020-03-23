@@ -1,5 +1,6 @@
 package com.example.linguabox;
 
+import androidx.core.app.ActivityCompat;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
@@ -18,6 +20,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import com.microsoft.cognitiveservices.speech.ResultReason;
+import com.microsoft.cognitiveservices.speech.SpeechConfig;
+import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult;
+import com.microsoft.cognitiveservices.speech.SpeechRecognizer;
+
+import static android.Manifest.permission.*;
+
 public class ChatActivity extends FragmentActivity implements HelperDialogFragment.HelperDialogListener{
     private EditText editText;
     private MessageAdapter messageAdapter;
@@ -27,6 +36,10 @@ public class ChatActivity extends FragmentActivity implements HelperDialogFragme
     String email;
     int selectedMessagePos;
     Message selectedMessage;
+
+    private static String speechSubscriptionKey = "9d1cb6dc1aff4b6ab5ab311b84f642a5";
+    private static String serviceRegion = "eastus";
+
     /**
      * First function called on activity creation
      *
@@ -45,6 +58,10 @@ public class ChatActivity extends FragmentActivity implements HelperDialogFragme
         messagesView = findViewById(R.id.messages_view);
         messagesView.setAdapter(messageAdapter);
         messagesView.setLongClickable(true);
+
+
+        int requestCode = 5; // unique code for the permission request
+        ActivityCompat.requestPermissions(ChatActivity.this, new String[]{RECORD_AUDIO, INTERNET}, requestCode);
 
         //LONG CLICK FUNCTION HERE
         messagesView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -143,5 +160,37 @@ public class ChatActivity extends FragmentActivity implements HelperDialogFragme
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
         dialog.dismiss();
+    }
+
+    public void onSpeechButtonClicked(View v) {
+        TextView txt = (TextView) this.findViewById(R.id.editText); // 'hello' is the ID of your text view
+
+        try {
+            SpeechConfig config = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
+            assert(config != null);
+
+            SpeechRecognizer reco = new SpeechRecognizer(config);
+            assert(reco != null);
+
+            Future<SpeechRecognitionResult> task = reco.recognizeOnceAsync();
+            assert(task != null);
+
+            // Note: this will block the UI thread, so eventually, you want to
+            //        register for the event (see full samples)
+            SpeechRecognitionResult result = task.get();
+            assert(result != null);
+
+            if (result.getReason() == ResultReason.RecognizedSpeech) {
+                txt.setText(result.toString());
+            }
+            else {
+                txt.setText("Error recognizing. Did you update the subscription info?" + System.lineSeparator() + result.toString());
+            }
+
+            reco.close();
+        } catch (Exception ex) {
+            Log.e("SpeechSDKDemo", "unexpected " + ex.getMessage());
+            assert(false);
+        }
     }
 }
