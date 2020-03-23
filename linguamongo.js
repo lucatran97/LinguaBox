@@ -4,69 +4,45 @@ const uri = "mongodb+srv://trung_nguyen:linguabox@linguabox-no2v7.azure.mongodb.
 const client = new MongoClient(uri, { useNewUrlParser: true });
 
 var dbCRUD = {
-    listDatabases: async function (){
+    createListing: async function (email, res){
         try {
-            await client.connect();
-            databasesList = await client.db().admin().listDatabases();
-        
-            console.log("Databases:");
-            databasesList.databases.forEach(db => console.log(` - ${db.name}`));
-            await client.close();
-        } catch (err) {
-            console.log(err);
-        }
-    },
-    createListing: async function (newListing){
-        try {
-            await client.connect();
-            const result = await client.db("sample_airbnb").collection("listingsAndReviews").insertOne(newListing);
-            console.log(`New listing created with the following id: ${result.insertedId}`);
-            await client.close();
-        } catch (err) {
-            console.log(err);
-        }
-    },
-    findListingByName: async function (nameOfListing) {
-        try{
-            await client.connect();
-            result = await client.db("sample_airbnb").collection("listingsAndReviews")
-                                .findOne({ name: nameOfListing });
-        
-            if (result) {
-                console.log(`Found a listing in the collection with the name '${nameOfListing}':`);
-                console.log(result);
-            } else {
-                console.log(`No listings found with the name '${nameOfListing}'`);
+            var newListing = {
+                user_id: email
             }
+            const result = await client.db("linguadb").collection("users").insertOne(newListing);
+            res.send(JSON.stringify({status: "success", message: "Welcome new user " + email + "!"}));
             await client.close();
         } catch (err) {
-            console.log(err);
+            res.send(JSON.stringify({status: "failure", message: err.toString()}));
         }
     },
-    updateListingByName: async function (nameOfListing, updatedListing) {
-        try {
-            await client.connect();
-            result = await client.db("sample_airbnb").collection("listingsAndReviews")
-                                .updateOne({ name: nameOfListing }, { $set: updatedListing });
-        
-            console.log(`${result.matchedCount} document(s) matched the query criteria.`);
-            console.log(`${result.modifiedCount} document(s) was/were updated.`);
-            await client.close();
-        } catch (err) {
-            console.log(err);
-        }
-    },
-    deleteListingByName: async function(nameOfListing) {
-        try {
-            await client.connect();
-            result = await client.db("sample_airbnb").collection("listingsAndReviews")
-                    .deleteOne({ name: nameOfListing });
-            console.log(`${result.deletedCount} document(s) was/were deleted.`);
-            await client.close();
-        } catch (err) {
-            console.log(err);
+
+    signInHandler: async function (email, res) {
+        if(validateEmail(email)){
+            try{
+                await client.connect();
+                result = await client.db("linguadb").collection("users")
+                                    .findOne({ user_id: email });
+            
+                if (result) {
+                    res.send(JSON.stringify({status: "success", message: "Welcome back " + email + "!"}));
+                } else {
+                    this.createListing(email, res);
+                }
+            } catch (err) {
+                res.send(JSON.stringify({status: "failure", message: err.toString()}));
+            }
+        } else {
+            res.send(JSON.stringify({status: "failure", message: "Invalid email"}));
         }
     }
+}
+
+function validateEmail(email) {
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+      return (true);
+    }
+      return (false);
 }
 
 module.exports.dbCRUD = dbCRUD;
