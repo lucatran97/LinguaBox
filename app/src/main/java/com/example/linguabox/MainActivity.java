@@ -17,12 +17,18 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 public class MainActivity extends AppCompatActivity {
 
     // Set Up Constants
     int SIGNED_IN = 0;
     GoogleSignInClient client;
     SignInButton signInButton;
+    private ExecutorService es;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize Sign-In Button
         signInButton = findViewById(R.id.sign_in_button);
+        es = Executors.newSingleThreadExecutor();
 
         // Setting Up Google to Require Email & Basic Info
 
@@ -68,11 +75,15 @@ public class MainActivity extends AppCompatActivity {
             Log.w("Sign In Success", "Sign In Successful !!");
             Toast.makeText(MainActivity.this, "SIGN IN SUCCESSFUL !!", Toast.LENGTH_LONG).show();
             assert account != null;
-            String name = account.getGivenName();
-            String email = account.getEmail();
+            Future<String> result = es.submit(new MongodbLog(account.getEmail()));
+            try {
+                Log.w("Response", result.get());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             Intent chooseLanguage = new Intent(getApplicationContext(), SelectLanguageActivity.class);
-            chooseLanguage.putExtra("name", name);
-            chooseLanguage.putExtra("email", email);
+            chooseLanguage.putExtra("name", account.getGivenName());
+            chooseLanguage.putExtra("email", account.getEmail());
             startActivity(chooseLanguage);
 
         } catch (ApiException e) {
@@ -92,4 +103,16 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onStart();
     }*/
+
+    private class MongodbLog implements Callable<String> {
+        String email;
+        public MongodbLog(String email){
+            this.email = email;
+        }
+
+        @Override
+        public String call() throws Exception {
+            return HttpRequest.signIn(email);
+        }
+    }
 }

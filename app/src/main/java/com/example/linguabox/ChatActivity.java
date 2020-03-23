@@ -80,7 +80,8 @@ public class ChatActivity extends FragmentActivity implements HelperDialogFragme
             try {
                 displayMessage(result.get());
             } catch (Exception e) {
-                e.printStackTrace();            }
+                e.printStackTrace();
+            }
         }
     }
 
