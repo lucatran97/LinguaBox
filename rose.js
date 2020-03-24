@@ -8,6 +8,7 @@ class DialogFlow {
 
 		let privateKey = process.env.DIALOGFLOW_PRIVATE_KEY.replace(/\\n/gm, '\n');
 		let clientEmail = process.env.DIALOGFLOW_CLIENT_EMAIL;
+		//Base64.encodeBase64URLSafeString
 		let config = {
 			credentials: {
 				private_key: privateKey,
@@ -30,7 +31,6 @@ class DialogFlow {
 
 	async sendTextMessageToDialogFlow(textMessage, sessionId) {
 		// Define session path
-		//console.log(this.projectId);
 		const sessionPath = this.sessionClient.sessionPath(this.projectId, sessionId);
 		// The text query request.
 		const request = {
@@ -59,13 +59,15 @@ var df = new DialogFlow('sa1-lmtvhu');
 
 var inputHandler = {
 	processChat: async function(message, sessionId, language, res){
-		microsoftTranslator.translate(message, "PRE", sessionId, language, res);
+		var opts = {stage: "PRE", session: sessionId, language: language};
+		microsoftTranslator.translate(message, opts, res);
 	},
 	onPreTransateSuccess: async function(message, sessionId, language, res){
 		df.chatbotQuery(message, sessionId, language, res);
 	},
 	onChatbotSuccess: async function(message, sessionId, language, res){
-		microsoftTranslator.translate(message, "POST", sessionId, language, res);
+		var opts = {stage: "POST", session: sessionId, language: language};
+		microsoftTranslator.translate(message, opts, res);
 	},
 	onPostTranslateSuccess: async function(rMessage, rTranslation, res){
 		res.send(JSON.stringify({message: rMessage, translation: rTranslation}));

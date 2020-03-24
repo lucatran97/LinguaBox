@@ -13,20 +13,26 @@ if (!process.env[endpoint_var]) {
 }
 var endpoint = process.env[endpoint_var];
 
-var learning;
-var translate = async function(message, stage, sessionID, language, sRes){
-  learning = language?language:'es';
-  console.log(learning);
-  var base = (stage==="PRE")?learning:'en';
-  var target = (stage==="PRE")?'en':learning;
+var translate = async function(message, opts, sRes){
+  var language_to, language_from;
+  if(opts.stage==="NORM"){
+    language_to = opts.language_to;
+    language_from = opts.language_from;
+  } else if (opts.stage==="PRE") {
+    language_from = opts.language?opts.language:'es';
+    language_to = 'en';
+  } else {
+    language_to = opts.language?opts.language:'es';
+    language_from = 'en';
+  }
   let options = {
     method: 'POST',
     baseUrl: endpoint,
     url: 'translate',
     qs: {
       'api-version': '3.0',
-      'from': base,
-      'to': [target]
+      'from': language_from,
+      'to': [language_to]
     },
     headers: {
       'Ocp-Apim-Subscription-Key': subscriptionKey,
@@ -41,12 +47,14 @@ var translate = async function(message, stage, sessionID, language, sRes){
   request(options, function(err, res, body){
     if(!body[0].translations){
       sRes.send(JSON.stringify({message: "Cannot evoke Microsoft Translator."}));
-      console.log("Cannot evoke Microsoft API at stage: " + stage);
+      console.log("Cannot evoke Microsoft API at stage: " + opts.stage);
     } else {
-      if(stage==="PRE"){
-        rose.inputHandler.onPreTransateSuccess(body[0].translations[0].text.replace(/["]+/g, ''), sessionID, language, sRes);
-      } else {
+      if(opts.stage==="PRE"){
+        rose.inputHandler.onPreTransateSuccess(body[0].translations[0].text.replace(/["]+/g, ''), opts.session, opts.language, sRes);
+      } else if (opts.stage==="POST") {
         rose.inputHandler.onPostTranslateSuccess(body[0].translations[0].text.replace(/["]+/g, ''), message, sRes);
+      } else {
+        sRes.send(JSON.stringify({translation: body[0].translations[0].text.replace(/["]+/g, '')}));
       }
     }
   });
