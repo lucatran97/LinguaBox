@@ -9,14 +9,22 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import com.microsoft.cognitiveservices.speech.ResultReason;
+import com.microsoft.cognitiveservices.speech.SpeechConfig;
+import com.microsoft.cognitiveservices.speech.SpeechSynthesisCancellationDetails;
+import com.microsoft.cognitiveservices.speech.SpeechSynthesisResult;
+import com.microsoft.cognitiveservices.speech.SpeechSynthesizer;
+
+import static android.Manifest.permission.INTERNET;
+
 
 public class ChatActivity extends FragmentActivity implements HelperDialogFragment.HelperDialogListener{
     private EditText editText;
@@ -27,6 +35,10 @@ public class ChatActivity extends FragmentActivity implements HelperDialogFragme
     String email;
     int selectedMessagePos;
     Message selectedMessage;
+    private static String speechSubscriptionKey = "9d1cb6dc1aff4b6ab5ab311b84f642a5";
+    private static String serviceRegion = "eastus";
+    private SpeechConfig speechConfig;
+    private SpeechSynthesizer synthesizer;
     /**
      * First function called on activity creation
      *
@@ -130,15 +142,37 @@ public class ChatActivity extends FragmentActivity implements HelperDialogFragme
     // Fragment.onAttach() callback, which it uses to call the following methods
     // defined by the NoticeDialogFragment.NoticeDialogListener interface
     @Override
-    public void onTranslate(DialogFragment dialog) {
+    public void onDialogPositiveClick(DialogFragment dialog) {
         selectedMessage.swapDisplay();
         messageAdapter.set(selectedMessagePos,selectedMessage);
         messagesView.setSelection(selectedMessagePos);
     }
 
     @Override
-    public void onListen(DialogFragment dialog) {
+    public void onDialogNeutralClick(DialogFragment dialog) {
+        // Initialize speech synthesizer and its dependencies
+        speechConfig = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
+        assert(speechConfig != null);
+        speechConfig.setSpeechSynthesisLanguage("es-ES");
 
+        synthesizer = new SpeechSynthesizer(speechConfig);
+        assert(synthesizer != null);
+        try {
+            // Note: this will block the UI thread, so eventually, you want to register for the event
+            SpeechSynthesisResult result = synthesizer.SpeakText(selectedMessage.getText());
+            assert(result != null);
+
+            if (result.getReason() == ResultReason.SynthesizingAudioCompleted) {
+                Log.w("STATUS", "SUCCESS");
+            }
+            else if (result.getReason() == ResultReason.Canceled) {
+                Log.w("STATUS", "CANCELED");
+            }
+            result.close();
+        } catch (Exception ex) {
+            Log.e("SpeechSDKDemo", "unexpected " + ex.getMessage());
+            assert(false);
+        }
     }
 
     @Override
