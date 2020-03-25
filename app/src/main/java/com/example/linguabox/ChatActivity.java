@@ -1,15 +1,16 @@
 package com.example.linguabox;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 
@@ -19,14 +20,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import com.microsoft.cognitiveservices.speech.ResultReason;
 import com.microsoft.cognitiveservices.speech.SpeechConfig;
-import com.microsoft.cognitiveservices.speech.SpeechSynthesisCancellationDetails;
 import com.microsoft.cognitiveservices.speech.SpeechSynthesisResult;
 import com.microsoft.cognitiveservices.speech.SpeechSynthesizer;
 
-import static android.Manifest.permission.INTERNET;
-
-
-public class ChatActivity extends FragmentActivity implements HelperDialogFragment.HelperDialogListener{
+public class ChatActivity extends AppCompatActivity implements HelperDialogFragment.HelperDialogListener {
     private EditText editText;
     private MessageAdapter messageAdapter;
     private ListView messagesView;
@@ -39,6 +36,7 @@ public class ChatActivity extends FragmentActivity implements HelperDialogFragme
     private static String serviceRegion = "eastus";
     private SpeechConfig speechConfig;
     private SpeechSynthesizer synthesizer;
+
     /**
      * First function called on activity creation
      *
@@ -51,7 +49,6 @@ public class ChatActivity extends FragmentActivity implements HelperDialogFragme
         Intent intent = this.getIntent();
         language = intent.getStringExtra("language");
         email = intent.getStringExtra("email");
-
         editText = findViewById(R.id.editText);
         messageAdapter = new MessageAdapter(this);
         messagesView = findViewById(R.id.messages_view);
@@ -120,6 +117,9 @@ public class ChatActivity extends FragmentActivity implements HelperDialogFragme
         messagesView.setSelection(messagesView.getCount() - 1);
     }
 
+    /**
+     * Additional thread to handle network operation
+     */
     private class SendRun implements Callable<Message> {
         String message;
         public SendRun(String message){
@@ -132,15 +132,19 @@ public class ChatActivity extends FragmentActivity implements HelperDialogFragme
         }
     }
 
+    /**
+     * Displays the dialog when a message is chosen
+     */
     public void showCustomDialog() {
         // Create an instance of the dialog fragment and show it
         DialogFragment dialog = new HelperDialogFragment();
         dialog.show(getSupportFragmentManager(), "HelperDialogFragment");
     }
 
-    // The dialog fragment receives a reference to this Activity through the
-    // Fragment.onAttach() callback, which it uses to call the following methods
-    // defined by the NoticeDialogFragment.NoticeDialogListener interface
+    /**
+     * The 'positive' option is reserved for displaying translation
+     * @param dialog
+     */
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         selectedMessage.swapDisplay();
@@ -148,6 +152,10 @@ public class ChatActivity extends FragmentActivity implements HelperDialogFragme
         messagesView.setSelection(selectedMessagePos);
     }
 
+    /**
+     * The 'neutral' option is reserved for speech service
+     * @param dialog
+     */
     @Override
     public void onDialogNeutralClick(DialogFragment dialog) {
         // Initialize speech synthesizer and its dependencies
@@ -175,8 +183,36 @@ public class ChatActivity extends FragmentActivity implements HelperDialogFragme
         }
     }
 
+    /**
+     * The 'negative' option dismisses the dialog
+     * @param dialog
+     */
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
         dialog.dismiss();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_chat, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) { switch(item.getItemId()) {
+        case R.id.option_menu:
+            Log.w("PRESSED", "MENU");
+            return(true);
+        case R.id.option_language_select:
+            Intent languageSelect = new Intent(getApplicationContext(), SelectLanguageActivity.class);
+            startActivity(languageSelect);
+            return(true);
+        case R.id.option_sign_out:
+            Log.w("PRESSED", "SIGN OUT");
+            return(true);
+
+    }
+        return(super.onOptionsItemSelected(item));
     }
 }
