@@ -36,6 +36,7 @@ public class MenuActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent selectLanguage = new Intent(getApplicationContext(), SelectLanguageActivity.class);
                 selectLanguage.putExtra("email", email);
+                selectLanguage.putExtra("name", name);
                 startActivity(selectLanguage);
             }
         });
@@ -55,7 +56,9 @@ public class MenuActivity extends AppCompatActivity {
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent signOut = new Intent(getApplicationContext(), MainActivity.class);
+                signOut.putExtra("Sign Out", true);
+                startActivity(signOut);
             }
         });
     }

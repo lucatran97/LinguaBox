@@ -29,6 +29,7 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
     private ListView messagesView;
     private ExecutorService es;
     String language;
+    String name;
     String email;
     int selectedMessagePos;
     Message selectedMessage;
@@ -49,6 +50,7 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
         Intent intent = this.getIntent();
         language = intent.getStringExtra("language");
         email = intent.getStringExtra("email");
+        name = intent.getStringExtra("name");
         editText = findViewById(R.id.editText);
         messageAdapter = new MessageAdapter(this);
         messagesView = findViewById(R.id.messages_view);
@@ -199,17 +201,29 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
         return true;
     }
 
+    /**
+     * Menu Option Assignments
+     * @param item the option chosen by the user
+     * @return true if successful
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) { switch(item.getItemId()) {
         case R.id.option_menu:
-            Log.w("PRESSED", "MENU");
+            Intent menu = new Intent(getApplicationContext(), MenuActivity.class);
+            menu.putExtra("email", email);
+            menu.putExtra("name", name);
+            startActivity(menu);
             return(true);
         case R.id.option_language_select:
             Intent languageSelect = new Intent(getApplicationContext(), SelectLanguageActivity.class);
+            languageSelect.putExtra("name", name);
+            languageSelect.putExtra("email", email);
             startActivity(languageSelect);
             return(true);
         case R.id.option_sign_out:
-            Log.w("PRESSED", "SIGN OUT");
+            Intent signOut = new Intent(getApplicationContext(), MainActivity.class);
+            signOut.putExtra("Sign Out", true);
+            startActivity(signOut);
             return(true);
 
     }

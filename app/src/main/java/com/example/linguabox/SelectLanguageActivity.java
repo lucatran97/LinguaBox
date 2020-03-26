@@ -17,6 +17,7 @@ public class SelectLanguageActivity extends AppCompatActivity implements Adapter
     String[] countryCodes = {"es", "zh-Hans", "de"};
     String chosenCode = "es";
     String email;
+    String name;
     int flags[] = {R.drawable.spanish, R.drawable.chinese, R.drawable.german};
     Button continueButton;
 
@@ -26,12 +27,14 @@ public class SelectLanguageActivity extends AppCompatActivity implements Adapter
         setContentView(R.layout.activity_select_language);
         Intent intent = this.getIntent();
         email = intent.getStringExtra("email");
+        name = intent.getStringExtra("name");
         continueButton = (Button) findViewById(R.id.continue_button);
         continueButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent startChat = new Intent(getApplicationContext(), ChatActivity.class);
                 startChat.putExtra("email", email);
                 startChat.putExtra("language", chosenCode);
+                startChat.putExtra("name", name);
                 startActivity(startChat);
             }
         });

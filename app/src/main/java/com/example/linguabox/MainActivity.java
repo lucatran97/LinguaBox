@@ -1,5 +1,6 @@
 package com.example.linguabox;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,6 +16,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import java.util.concurrent.Callable;
@@ -48,6 +50,15 @@ public class MainActivity extends AppCompatActivity {
         // Build Google Client, options specified by gso
         client = GoogleSignIn.getClient(this, gso);
 
+        Intent intent = this.getIntent();
+        if(intent.getBooleanExtra("Sign Out", false)){
+            client.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Toast.makeText(MainActivity.this, "SIGN OUT SUCCESSFUL!", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
 
         signInButton.setOnClickListener((view)-> {signIn();});
 
@@ -73,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             Log.w("Sign In Success", "Sign In Successful !!");
-            Toast.makeText(MainActivity.this, "SIGN IN SUCCESSFUL !!", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "SIGN IN SUCCESSFUL!", Toast.LENGTH_LONG).show();
             assert account != null;
             Future<String> result = es.submit(new MongodbLog(account.getEmail()));
             try {
@@ -93,17 +104,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //@Override
-    /*protected void onStart() {
-
-        Log.w("account logged in", "acc = " + account.getEmail());
-
-        if (account != null) {
-            //startActivity(new Intent(MainActivity.this, MainActivity.class));
-        }
-        super.onStart();
-    }*/
-
     private class MongodbLog implements Callable<String> {
         String email;
         public MongodbLog(String email){
@@ -114,5 +114,10 @@ public class MainActivity extends AppCompatActivity {
         public String call() throws Exception {
             return HttpRequest.signIn(email);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // This is to disable users' pressing the back button after signing out
     }
 }
