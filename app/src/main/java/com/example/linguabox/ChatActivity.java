@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,10 +30,12 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
     private MessageAdapter messageAdapter;
     private ListView messagesView;
     private ExecutorService es;
-    String language;
+    String languageTranslator;
+    String languageTextToSpeech;
     String name;
     String email;
-    int selectedMessagePos;
+    int selectedMessagePos = -1;
+    Set<Integer> translatedMessage;
     Message selectedMessage;
     private static String speechSubscriptionKey = "9d1cb6dc1aff4b6ab5ab311b84f642a5";
     private static String serviceRegion = "eastus";
@@ -48,7 +52,8 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         Intent intent = this.getIntent();
-        language = intent.getStringExtra("language");
+        languageTranslator = intent.getStringExtra("language_translator");
+        languageTextToSpeech = intent.getStringExtra("language_text_to_speech");
         email = intent.getStringExtra("email");
         name = intent.getStringExtra("name");
         editText = findViewById(R.id.editText);
@@ -56,6 +61,7 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
         messagesView = findViewById(R.id.messages_view);
         messagesView.setAdapter(messageAdapter);
         messagesView.setLongClickable(true);
+        translatedMessage = new HashSet<>();
 
         //LONG CLICK FUNCTION HERE
         messagesView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -130,7 +136,7 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
 
         @Override
         public Message call() throws Exception {
-            return HttpRequest.sendMessage(email, message, language);
+            return HttpRequest.sendMessage(email, message, languageTranslator);
         }
     }
 
@@ -150,6 +156,11 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         selectedMessage.swapDisplay();
+        if(translatedMessage.contains(selectedMessagePos)){
+            translatedMessage.remove(selectedMessagePos);
+        } else {
+            translatedMessage.add(selectedMessagePos);
+        }
         messageAdapter.set(selectedMessagePos,selectedMessage);
         messagesView.setSelection(selectedMessagePos);
     }
@@ -163,8 +174,11 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
         // Initialize speech synthesizer and its dependencies
         speechConfig = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
         assert(speechConfig != null);
-        speechConfig.setSpeechSynthesisLanguage("es-ES");
-
+        if(translatedMessage.contains(selectedMessagePos)) {
+            speechConfig.setSpeechSynthesisLanguage("en-US");
+        } else {
+            speechConfig.setSpeechSynthesisLanguage(languageTextToSpeech);
+        }
         synthesizer = new SpeechSynthesizer(speechConfig);
         assert(synthesizer != null);
         try {

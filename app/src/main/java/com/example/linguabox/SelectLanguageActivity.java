@@ -14,8 +14,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class SelectLanguageActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     String[] countryNames = {"Spanish","Chinese (Simplified)","German"};
-    String[] countryCodes = {"es", "zh-Hans", "de"};
-    String chosenCode = "es";
+    String[] countryCodesTranslator = {"es", "zh-Hans", "de"};
+    String[] countryCodesTextToSpeech = {"es-ES", "zh-CN", "de-DE"};
+    String chosenCodeTranslator = "es";
+    String chosenCodeTextToSpeech = "es-ES";
     String email;
     String name;
     int flags[] = {R.drawable.spanish, R.drawable.chinese, R.drawable.german};
@@ -33,7 +35,8 @@ public class SelectLanguageActivity extends AppCompatActivity implements Adapter
             public void onClick(View v) {
                 Intent startChat = new Intent(getApplicationContext(), ChatActivity.class);
                 startChat.putExtra("email", email);
-                startChat.putExtra("language", chosenCode);
+                startChat.putExtra("language_translator", chosenCodeTranslator);
+                startChat.putExtra("language_text_to_speech", chosenCodeTextToSpeech);
                 startChat.putExtra("name", name);
                 startActivity(startChat);
             }
@@ -44,7 +47,7 @@ public class SelectLanguageActivity extends AppCompatActivity implements Adapter
         Spinner spin = (Spinner) findViewById(R.id.simpleSpinner);
         spin.setOnItemSelectedListener(this);
 
-        LanguageSelectAdapter customAdapter = new LanguageSelectAdapter(getApplicationContext(),flags,countryNames, countryCodes);
+        LanguageSelectAdapter customAdapter = new LanguageSelectAdapter(getApplicationContext(),flags,countryNames, countryCodesTranslator, countryCodesTextToSpeech);
         spin.setAdapter(customAdapter);
     }
 
@@ -52,7 +55,8 @@ public class SelectLanguageActivity extends AppCompatActivity implements Adapter
     //Performing action onItemSelected and onNothing selected
     @Override
     public void onItemSelected(AdapterView<?> arg0, View arg1, int position,long id) {
-        chosenCode = countryCodes[position];
+        chosenCodeTranslator = countryCodesTranslator[position];
+        chosenCodeTextToSpeech = countryCodesTextToSpeech[position];
     }
 
     @Override
