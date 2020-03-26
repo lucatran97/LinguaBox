@@ -81,10 +81,10 @@ public class MainActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            Intent chooseLanguage = new Intent(getApplicationContext(), SelectLanguageActivity.class);
-            chooseLanguage.putExtra("name", account.getGivenName());
-            chooseLanguage.putExtra("email", account.getEmail());
-            startActivity(chooseLanguage);
+            Intent mainMenu = new Intent(getApplicationContext(), MenuActivity.class);
+            mainMenu.putExtra("name", account.getGivenName());
+            mainMenu.putExtra("email", account.getEmail());
+            startActivity(mainMenu);
 
         } catch (ApiException e) {
             e.printStackTrace();

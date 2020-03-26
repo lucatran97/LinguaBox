@@ -10,13 +10,13 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class SelectLanguageActivity extends Activity implements AdapterView.OnItemSelectedListener{
+import androidx.appcompat.app.AppCompatActivity;
+
+public class SelectLanguageActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     String[] countryNames = {"Spanish","Chinese (Simplified)","German"};
     String[] countryCodes = {"es", "zh-Hans", "de"};
     String chosenCode = "es";
     String email;
-    String name;
-    TextView nameDisplay;
     int flags[] = {R.drawable.spanish, R.drawable.chinese, R.drawable.german};
     Button continueButton;
 
@@ -25,10 +25,7 @@ public class SelectLanguageActivity extends Activity implements AdapterView.OnIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_language);
         Intent intent = this.getIntent();
-        name = intent.getStringExtra("name");
         email = intent.getStringExtra("email");
-        nameDisplay = (TextView) findViewById(R.id.user_name_display);
-        nameDisplay.setText(name);
         continueButton = (Button) findViewById(R.id.continue_button);
         continueButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
