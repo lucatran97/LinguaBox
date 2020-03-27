@@ -1,7 +1,5 @@
 package com.example.linguabox;
 
-import android.util.Log;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
@@ -27,7 +25,7 @@ public class HttpRequest {
      * @return A response string
      * @throws IOException
      */
-    private static Message post(String url, String json) throws IOException {
+    private static JSONObject post(String url, String json) throws IOException {
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(json, JSON);
         Request request = new Request.Builder()
@@ -37,10 +35,10 @@ public class HttpRequest {
                 .build();
         try (Response response = client.newCall(request).execute()) {
             JSONObject mainObject = new JSONObject(response.body().string());
-            return new Message(mainObject.getString("message"), mainObject.getString("translation"), false);
+            return mainObject;
         } catch (JSONException e) {
             e.printStackTrace();
-            return new Message("The program received invalid response from the server.", null, false);
+            return null;
         }
     }
 
@@ -50,10 +48,27 @@ public class HttpRequest {
 
     public static Message sendMessage(String email, String message, String language){
         try {
-            return post("https://linguabox.azurewebsites.net/chat", parseMessage(message, email, language));
+            JSONObject mainObject = post("https://linguabox.azurewebsites.net/chat", parseMessage(message, email, language));
+            return new Message(mainObject.getString("message"), mainObject.getString("translation"), false);
         } catch (IOException e) {
             e.printStackTrace();
             return new Message("Cannot connect to the server. If you just begin the chat, please wait a few seconds for the server to be online.", null, false);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return new Message("The program received invalid response from the server.", null, false);
+        }
+    }
+
+    public static String signIn(String email){
+        try {
+            JSONObject mainObject = post("https://linguabox.azurewebsites.net/users", "{\"email\": \""+email+"\"}");
+            return mainObject.getString("message");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Cannot connect to \'/users\'.";
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return "Invalid response from server.";
         }
     }
 }
