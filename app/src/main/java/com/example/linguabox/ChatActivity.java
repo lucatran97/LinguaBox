@@ -52,10 +52,11 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         Intent intent = this.getIntent();
+        UserAccount.verifySignIn(getApplicationContext(), this);
         languageTranslator = intent.getStringExtra("language_translator");
         languageTextToSpeech = intent.getStringExtra("language_text_to_speech");
-        email = intent.getStringExtra("email");
-        name = intent.getStringExtra("name");
+        email = UserAccount.getUserEmail();
+        name = UserAccount.getUserGivenName();
         editText = findViewById(R.id.editText);
         messageAdapter = new MessageAdapter(this);
         messagesView = findViewById(R.id.messages_view);
@@ -224,23 +225,30 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
     public boolean onOptionsItemSelected(MenuItem item) { switch(item.getItemId()) {
         case R.id.option_menu:
             Intent menu = new Intent(getApplicationContext(), MenuActivity.class);
-            menu.putExtra("email", email);
-            menu.putExtra("name", name);
             startActivity(menu);
             return(true);
         case R.id.option_language_select:
             Intent languageSelect = new Intent(getApplicationContext(), SelectLanguageActivity.class);
-            languageSelect.putExtra("name", name);
-            languageSelect.putExtra("email", email);
             startActivity(languageSelect);
             return(true);
         case R.id.option_sign_out:
-            Intent signOut = new Intent(getApplicationContext(), MainActivity.class);
-            signOut.putExtra("Sign Out", true);
-            startActivity(signOut);
+            UserAccount.signOut(getApplicationContext(), ChatActivity.this);
             return(true);
 
     }
         return(super.onOptionsItemSelected(item));
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        UserAccount.verifySignIn(getApplicationContext(), this);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        UserAccount.verifySignIn(getApplicationContext(), this);
     }
 }

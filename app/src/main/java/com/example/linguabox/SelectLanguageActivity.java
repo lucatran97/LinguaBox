@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.microsoft.cognitiveservices.speech.internal.User;
+
 public class SelectLanguageActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     String[] countryNames = {"Spanish","Chinese (Simplified)","German"};
     String[] countryCodesTranslator = {"es", "zh-Hans", "de"};
@@ -28,16 +30,15 @@ public class SelectLanguageActivity extends AppCompatActivity implements Adapter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_language);
         Intent intent = this.getIntent();
-        email = intent.getStringExtra("email");
-        name = intent.getStringExtra("name");
+        UserAccount.verifySignIn(getApplicationContext(), this);
+        email = UserAccount.getUserEmail();
+        name = UserAccount.getUserGivenName();
         continueButton = (Button) findViewById(R.id.continue_button);
         continueButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent startChat = new Intent(getApplicationContext(), ChatActivity.class);
-                startChat.putExtra("email", email);
                 startChat.putExtra("language_translator", chosenCodeTranslator);
                 startChat.putExtra("language_text_to_speech", chosenCodeTextToSpeech);
-                startChat.putExtra("name", name);
                 startActivity(startChat);
             }
         });
@@ -62,5 +63,18 @@ public class SelectLanguageActivity extends AppCompatActivity implements Adapter
     @Override
     public void onNothingSelected(AdapterView<?> arg0) {
         // TODO Auto-generated method stub
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        UserAccount.verifySignIn(getApplicationContext(), this);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        UserAccount.verifySignIn(getApplicationContext(), this);
     }
 }

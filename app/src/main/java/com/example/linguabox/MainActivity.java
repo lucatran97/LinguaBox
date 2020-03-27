@@ -18,6 +18,7 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.microsoft.cognitiveservices.speech.internal.User;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -92,9 +93,8 @@ public class MainActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            UserAccount.setAccount(account.getEmail(), account.getGivenName(), account.getFamilyName());
             Intent mainMenu = new Intent(getApplicationContext(), MenuActivity.class);
-            mainMenu.putExtra("name", account.getGivenName());
-            mainMenu.putExtra("email", account.getEmail());
             startActivity(mainMenu);
 
         } catch (ApiException e) {

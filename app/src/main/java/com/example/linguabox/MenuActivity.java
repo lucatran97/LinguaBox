@@ -2,11 +2,14 @@ package com.example.linguabox;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.microsoft.cognitiveservices.speech.internal.User;
 
 public class MenuActivity extends AppCompatActivity {
     String name;
@@ -21,9 +24,10 @@ public class MenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+        UserAccount.verifySignIn(getApplicationContext(), this);
         Intent intent = this.getIntent();
-        name = intent.getStringExtra("name");
-        email = intent.getStringExtra("email");
+        name = UserAccount.getUserGivenName();
+        email = UserAccount.getUserEmail();
         welcomeDisplay = (TextView) findViewById(R.id.menu_text_welcome);
         welcomeDisplay.setText("Hello " + name);
         chat = (Button) findViewById(R.id.menu_chat_button);
@@ -35,8 +39,6 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent selectLanguage = new Intent(getApplicationContext(), SelectLanguageActivity.class);
-                selectLanguage.putExtra("email", email);
-                selectLanguage.putExtra("name", name);
                 startActivity(selectLanguage);
             }
         });
@@ -56,10 +58,21 @@ public class MenuActivity extends AppCompatActivity {
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent signOut = new Intent(getApplicationContext(), MainActivity.class);
-                signOut.putExtra("Sign Out", true);
-                startActivity(signOut);
+                UserAccount.signOut(getApplicationContext(), MenuActivity.this);
             }
         });
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        UserAccount.verifySignIn(getApplicationContext(), this);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        UserAccount.verifySignIn(getApplicationContext(), this);
     }
 }
