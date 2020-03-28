@@ -16,4 +16,8 @@
     <string name="menu_chat_button">Chat &amp; Learn</string>
     <string name="menu_profile_button">Your Profile</string>
     <string name="menu_not_you">Not You?</string>
+    <string name="your_profile">Your Profile</string>
+    <string name="profile_instruction">Your progress for each language you have chosen in chat is shown below. Select a language from the dropdown to see your progress.</string>
+    <string name="demo">Demo</string>
+    <string name="menu_profile_close">Close</string>
 </resources>

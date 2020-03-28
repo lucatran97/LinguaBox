@@ -17,7 +17,6 @@ public class SelectLanguageActivity extends AppCompatActivity implements Adapter
     String chosenCodeTextToSpeech = "es-ES";
     String email;
     String name;
-    int flags[] = {R.drawable.spanish, R.drawable.chinese, R.drawable.german};
     Button continueButton;
 
     @Override
@@ -43,7 +42,7 @@ public class SelectLanguageActivity extends AppCompatActivity implements Adapter
         Spinner spin = (Spinner) findViewById(R.id.simpleSpinner);
         spin.setOnItemSelectedListener(this);
 
-        LanguageSelectAdapter customAdapter = new LanguageSelectAdapter(getApplicationContext(),flags,countryNames, countryCodesTranslator, countryCodesTextToSpeech);
+        LanguageSelectAdapter customAdapter = new LanguageSelectAdapter(getApplicationContext(), countryNames);
         spin.setAdapter(customAdapter);
     }
 
