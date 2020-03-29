@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -20,10 +21,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.microsoft.cognitiveservices.speech.ResultReason;
 import com.microsoft.cognitiveservices.speech.SpeechConfig;
 import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult;
 import com.microsoft.cognitiveservices.speech.SpeechRecognizer;
+import com.microsoft.cognitiveservices.speech.translation.SpeechTranslationConfig;
+import com.microsoft.cognitiveservices.speech.translation.TranslationRecognitionResult;
+import com.microsoft.cognitiveservices.speech.translation.TranslationRecognizer;
 
 import static android.Manifest.permission.*;
 
@@ -163,27 +168,39 @@ public class ChatActivity extends FragmentActivity implements HelperDialogFragme
     }
 
     public void onSpeechButtonClicked(View v) {
+        Snackbar listening = Snackbar.make(findViewById(R.id.weAreListening), "Listening...", Snackbar.LENGTH_LONG);
+        listening.show();
         TextView txt = (TextView) this.findViewById(R.id.editText); // 'hello' is the ID of your text view
-
+        Log.w("Language Code", "Language Code = " + language);
         try {
-            SpeechConfig config = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
-            assert(config != null);
+            SpeechTranslationConfig config = SpeechTranslationConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
 
-            SpeechRecognizer reco = new SpeechRecognizer(config);
+            assert(config != null);
+            String fromLanguage = language;
+            String toLanguage = language;
+            config.setSpeechRecognitionLanguage(fromLanguage);
+            config.addTargetLanguage(toLanguage);
+
+            TranslationRecognizer reco = new TranslationRecognizer(config);
             assert(reco != null);
 
-            Future<SpeechRecognitionResult> task = reco.recognizeOnceAsync();
+            Future<TranslationRecognitionResult> task = reco.recognizeOnceAsync();
             assert(task != null);
 
             // Note: this will block the UI thread, so eventually, you want to
             //        register for the event (see full samples)
-            SpeechRecognitionResult result = task.get();
+            TranslationRecognitionResult result = task.get();
             assert(result != null);
 
             if (result.getReason() == ResultReason.RecognizedSpeech) {
-                txt.setText(result.toString());
+                String rawResult = result.toString();
+                String trimmedResult = rawResult.substring(rawResult.indexOf("<") + 1);
+                trimmedResult.trim();
+                trimmedResult = trimmedResult.split(">")[0];
+                txt.setText(trimmedResult);
             }
             else {
+
                 txt.setText("Error recognizing. Did you update the subscription info?" + System.lineSeparator() + result.toString());
             }
 
