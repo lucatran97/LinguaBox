@@ -192,12 +192,26 @@ public class ChatActivity extends FragmentActivity implements HelperDialogFragme
             TranslationRecognitionResult result = task.get();
             assert(result != null);
 
-            if (result.getReason() == ResultReason.RecognizedSpeech) {
+            if(result.getReason() == ResultReason.RecognizedSpeech) {
                 String rawResult = result.toString();
                 String trimmedResult = rawResult.substring(rawResult.indexOf("<") + 1);
                 trimmedResult.trim();
                 trimmedResult = trimmedResult.split(">")[0];
                 txt.setText(trimmedResult);
+            }
+            else if(result.getReason() == ResultReason.TranslatedSpeech) {
+                String rawResult = result.toString();
+                String trimmedResult = rawResult.substring(rawResult.indexOf("<") + 1);
+                trimmedResult.trim();
+                trimmedResult = trimmedResult.split(">")[0];
+                txt.setText(trimmedResult);
+            }
+            else if(result.getReason() == ResultReason.Canceled) {
+                String rawResult = result.toString();
+                String trimmedResult = rawResult.substring(rawResult.indexOf("<") + 1);
+                trimmedResult.trim();
+                trimmedResult = trimmedResult.split(">")[0];
+                txt.setText(result.toString());
             }
             else {
 
