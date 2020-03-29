@@ -227,49 +227,46 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
         Snackbar listening = Snackbar.make(findViewById(R.id.weAreListening), "Listening...", Snackbar.LENGTH_LONG);
         listening.show();
         TextView txt = (TextView) this.findViewById(R.id.editText); // 'hello' is the ID of your text view
-        Log.w("Language Code", "Language Code = " + language);
+        Log.w("Language Code", "Language Code = " + languageTextToSpeech);
         try {
             SpeechTranslationConfig config = SpeechTranslationConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
 
-            assert(config != null);
-            String fromLanguage = language;
-            String toLanguage = language;
+            assert (config != null);
+            String fromLanguage = languageTextToSpeech;
+            String toLanguage = languageTextToSpeech;
             config.setSpeechRecognitionLanguage(fromLanguage);
             config.addTargetLanguage(toLanguage);
 
             TranslationRecognizer reco = new TranslationRecognizer(config);
-            assert(reco != null);
+            assert (reco != null);
 
             Future<TranslationRecognitionResult> task = reco.recognizeOnceAsync();
-            assert(task != null);
+            assert (task != null);
 
             // Note: this will block the UI thread, so eventually, you want to
             //        register for the event (see full samples)
             TranslationRecognitionResult result = task.get();
-            assert(result != null);
+            assert (result != null);
 
-            if(result.getReason() == ResultReason.RecognizedSpeech) {
+            if (result.getReason() == ResultReason.RecognizedSpeech) {
                 String rawResult = result.toString();
                 String trimmedResult = rawResult.substring(rawResult.indexOf("<") + 1);
                 trimmedResult.trim();
                 trimmedResult = trimmedResult.split(">")[0];
                 txt.setText(trimmedResult);
-            }
-            else if(result.getReason() == ResultReason.TranslatedSpeech) {
+            } else if (result.getReason() == ResultReason.TranslatedSpeech) {
                 String rawResult = result.toString();
                 String trimmedResult = rawResult.substring(rawResult.indexOf("<") + 1);
                 trimmedResult.trim();
                 trimmedResult = trimmedResult.split(">")[0];
                 txt.setText(trimmedResult);
-            }
-            else if(result.getReason() == ResultReason.Canceled) {
+            } else if (result.getReason() == ResultReason.Canceled) {
                 String rawResult = result.toString();
                 String trimmedResult = rawResult.substring(rawResult.indexOf("<") + 1);
                 trimmedResult.trim();
                 trimmedResult = trimmedResult.split(">")[0];
                 txt.setText(result.toString());
-            }
-            else {
+            } else {
 
                 txt.setText("Error recognizing. Did you update the subscription info?" + System.lineSeparator() + result.toString());
             }
@@ -277,8 +274,9 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
             reco.close();
         } catch (Exception ex) {
             Log.e("SpeechSDKDemo", "unexpected " + ex.getMessage());
-            assert(false);
+            assert (false);
         }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
