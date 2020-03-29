@@ -1,14 +1,12 @@
 package com.example.linguabox;
 
 import androidx.core.app.ActivityCompat;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -28,7 +26,6 @@ import com.microsoft.cognitiveservices.speech.SpeechConfig;
 import com.microsoft.cognitiveservices.speech.SpeechSynthesisResult;
 import com.microsoft.cognitiveservices.speech.SpeechSynthesizer;
 import com.google.android.material.snackbar.Snackbar;
-import com.microsoft.cognitiveservices.speech.SpeechRecognitionResult;
 import com.microsoft.cognitiveservices.speech.translation.SpeechTranslationConfig;
 import com.microsoft.cognitiveservices.speech.translation.TranslationRecognitionResult;
 import com.microsoft.cognitiveservices.speech.translation.TranslationRecognizer;
@@ -40,7 +37,7 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
     private ListView messagesView;
     private ExecutorService es;
     String languageTranslator;
-    String languageTextToSpeech;
+    String languageSpeech;
     String name;
     String email;
     int selectedMessagePos = -1;
@@ -64,7 +61,7 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
         Intent intent = this.getIntent();
         UserAccount.verifySignIn(getApplicationContext(), this);
         languageTranslator = intent.getStringExtra("language_translator");
-        languageTextToSpeech = intent.getStringExtra("language_text_to_speech");
+        languageSpeech = intent.getStringExtra("language_speech");
         email = UserAccount.getUserEmail();
         name = UserAccount.getUserGivenName();
         editText = findViewById(R.id.editText);
@@ -192,7 +189,7 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
         if(translatedMessage.contains(selectedMessagePos)) {
             speechConfig.setSpeechSynthesisLanguage("en-US");
         } else {
-            speechConfig.setSpeechSynthesisLanguage(languageTextToSpeech);
+            speechConfig.setSpeechSynthesisLanguage(languageSpeech);
         }
         synthesizer = new SpeechSynthesizer(speechConfig);
         assert(synthesizer != null);
@@ -227,13 +224,13 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
         Snackbar listening = Snackbar.make(findViewById(R.id.weAreListening), "Listening...", Snackbar.LENGTH_LONG);
         listening.show();
         TextView txt = (TextView) this.findViewById(R.id.editText); // 'hello' is the ID of your text view
-        Log.w("Language Code", "Language Code = " + language);
+        Log.w("Language Code", "Language Code = " + languageSpeech);
         try {
             SpeechTranslationConfig config = SpeechTranslationConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
 
             assert(config != null);
-            String fromLanguage = language;
-            String toLanguage = language;
+            String fromLanguage = languageSpeech;
+            String toLanguage = languageSpeech;
             config.setSpeechRecognitionLanguage(fromLanguage);
             config.addTargetLanguage(toLanguage);
 
@@ -265,6 +262,8 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
             Log.e("SpeechSDKDemo", "unexpected " + ex.getMessage());
             assert(false);
         }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
