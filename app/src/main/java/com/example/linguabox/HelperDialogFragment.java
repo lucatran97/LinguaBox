@@ -14,8 +14,8 @@ public class HelperDialogFragment extends DialogFragment {
      * implement this interface in order to receive event callbacks.
      * Each method passes the DialogFragment in case the host needs to query it. */
     public interface HelperDialogListener {
-        public void onTranslate(DialogFragment dialog);
-        public void onListen(DialogFragment dialog);
+        public void onDialogPositiveClick(DialogFragment dialog);
+        public void onDialogNeutralClick(DialogFragment dialog);
         public void onDialogNegativeClick(DialogFragment dialog);
     }
 
@@ -43,13 +43,13 @@ public class HelperDialogFragment extends DialogFragment {
         builder.setPositiveButton(R.string.translate, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Send the positive button event back to the host activity
-                        listener.onTranslate(HelperDialogFragment.this);
+                        listener.onDialogPositiveClick(HelperDialogFragment.this);
                     }
                 })
                 .setNeutralButton(R.string.listen, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Send the positive button event back to the host activity
-                        listener.onListen(HelperDialogFragment.this);
+                        listener.onDialogNeutralClick(HelperDialogFragment.this);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

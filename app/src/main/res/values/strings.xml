@@ -10,4 +10,14 @@
     <string name="cancel">Cancel</string>
     <string name="translation_button_description">Translate</string>
     <string name="listen_button_description">Listen</string>
+    <string name="option_menu">Main Menu</string>
+    <string name="option_language_select">Language Select</string>
+    <string name="option_sign_out">Sign Out</string>
+    <string name="menu_chat_button">Chat &amp; Learn</string>
+    <string name="menu_profile_button">Your Profile</string>
+    <string name="menu_not_you">Not You?</string>
+    <string name="your_profile">Your Profile</string>
+    <string name="profile_instruction">Your progress for each language you have chosen in chat is shown below. Select a language from the dropdown to see your progress.</string>
+    <string name="demo">Demo</string>
+    <string name="menu_profile_close">Close</string>
 </resources>
