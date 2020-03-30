@@ -17,7 +17,7 @@ router.get('/', async function(req, res, next){
 router.post('/', async function(req, res, next){
     res.setHeader('Content-Type', 'application/json');
     if((req.body!=undefined)&&(req.body.message!=undefined)&&(req.body.email!=undefined)&&(req.body.language!=undefined)){
-        linguamongo.dbCRUD.checkLanguageProgress(req.body.email.replace(/["]+/g, ''), req.body.language);
+        linguamongo.dbCRUD.updateLanguageProgress(req.body.email.replace(/["]+/g, ''), req.body.language);
         rose.inputHandler.processChat(encodeURI(req.body.message), req.body.email, req.body.language.replace(/["]+/g, ''), res);
     } else {
         res.send(JSON.stringify({message: "Cannot recognize POST request. Maybe missing in request body: message, email and/or language"}));

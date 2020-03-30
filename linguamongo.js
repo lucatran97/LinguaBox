@@ -73,7 +73,7 @@ var dbCRUD = {
     },
 
     updateLanguageProgress: async function (email, req_language) {
-        if(req_language!= 'en'){
+        if(req_language != 'en'){
             var date_ob = new Date();
             var myQuery = { user_id: email, language: dict[req_language] };
             if(validateEmail(email)){
@@ -135,7 +135,7 @@ var dbCRUD = {
                             last_session: date_ob,
                             level: 1,
                             progress: 0,
-                            messages_sent: 0,
+                            messages_sent: 1,
                             current_streak: 1,
                             longest_streak: 1
                         }
