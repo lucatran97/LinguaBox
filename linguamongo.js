@@ -63,7 +63,7 @@ var dbCRUD = {
                         if (err) throw err;
                         console.log("1 document updated");
                       });
-
+                      await client.close();
                 } else {
                     let newListing = {
                         user_id: email,
@@ -77,7 +77,6 @@ var dbCRUD = {
                     }
                     this.createListing(newListing, null);
                 }
-                await client.close();
             } catch (err) {
                 console.log(JSON.stringify({status: "failure", message: err.toString()}));
                 await client.close();
