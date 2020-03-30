@@ -16,7 +16,6 @@ var dbCRUD = {
             if (res!=null){
                 res.send(JSON.stringify({status: "success", message: "Welcome new user " + email + "!"}));
             }
-            await client.close();
         } catch (err) {
             console.log(err.toString());
             if (res!=null){
@@ -63,7 +62,6 @@ var dbCRUD = {
                         if (err) throw err;
                         console.log("1 document updated");
                       });
-                      await client.close();
                 } else {
                     let newListing = {
                         user_id: email,
@@ -79,7 +77,6 @@ var dbCRUD = {
                 }
             } catch (err) {
                 console.log(JSON.stringify({status: "failure", message: err.toString()}));
-                await client.close();
             }
         } else {
             console.log(JSON.stringify({status: "failure", message: "Invalid email"}));
