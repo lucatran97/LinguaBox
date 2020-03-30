@@ -1,13 +1,27 @@
 const dialogflow = require('dialogflow');
 const LANGUAGE_CODE = 'en-US'
 var microsoftTranslator = require('./microsoft');
+var linguamongo = require('./linguamongo');
 
 class DialogFlow {
-	constructor (projectId) {
-		this.projectId = projectId;
-
-		let privateKey = process.env.DIALOGFLOW_PRIVATE_KEY.replace(/\\n/gm, '\n');
-		let clientEmail = process.env.DIALOGFLOW_CLIENT_EMAIL;
+	constructor (level) {
+		this.projectId = 'sa1-lmtvhu';
+		var privateKey = process.env.DIALOGFLOW_PRIVATE_KEY.replace(/\\n/gm, '\n');
+		var clientEmail = process.env.DIALOGFLOW_CLIENT_EMAIL;
+		switch (level) {
+			case 1:
+				break;
+			case 2:
+				this.projectId = 'lingua-intermediate-olokkp';
+				privateKey = process.env.DIALOGFLOW_PRIVATE_KEY_INT.replace(/\\n/gm, '\n');
+				clientEmail = process.env.DIALOGFLOW_CLIENT_EMAIL_INT;
+				break;
+			case 3:
+				this.projectId = 'lingua-hard-qtisyo';
+				privateKey = process.env.DIALOGFLOW_PRIVATE_KEY_HARD.replace(/\\n/gm, '\n');
+				clientEmail = process.env.DIALOGFLOW_CLIENT_EMAIL_HARD;
+				break;
+		}
 		//Base64.encodeBase64URLSafeString
 		let config = {
 			credentials: {
@@ -55,14 +69,19 @@ class DialogFlow {
 	}
 }
 
-var df = new DialogFlow('sa1-lmtvhu');
-
 var inputHandler = {
 	processChat: async function(message, sessionId, language, res){
 		var opts = {stage: "PRE", session: sessionId, language: language};
+		console.log("here");
 		microsoftTranslator.translate(message, opts, res);
 	},
 	onPreTransateSuccess: async function(message, sessionId, language, res){
+		console.log("here2");
+		linguamongo.dbCRUD.updateLanguageProgress(message, sessionId, language, res);
+	},
+	onQuerySuccess: async function (message, sessionId, language, res, level){
+		console.log("here3");
+		var df = new DialogFlow(level);
 		df.chatbotQuery(message, sessionId, language, res);
 	},
 	onChatbotSuccess: async function(message, sessionId, language, res){

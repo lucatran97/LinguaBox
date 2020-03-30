@@ -25,39 +25,49 @@ var translate = async function(message, opts, sRes){
     language_to = opts.language?opts.language:'es';
     language_from = 'en';
   }
-  let options = {
-    method: 'POST',
-    baseUrl: endpoint,
-    url: 'translate',
-    qs: {
-      'api-version': '3.0',
-      'from': language_from,
-      'to': [language_to]
-    },
-    headers: {
-      'Ocp-Apim-Subscription-Key': subscriptionKey,
-      'Content-type': 'application/json',
-      'X-ClientTraceId': uuidv4().toString()
-    },
-    body: [{
-          'text': decodeURI(message)
-    }],
-    json: true,
-};
-  request(options, function(err, res, body){
-    if(!body[0].translations){
-      sRes.send(JSON.stringify({message: "Cannot evoke Microsoft Translator."}));
-      console.log("Cannot evoke Microsoft API at stage: " + opts.stage);
+  if (language_to===language_from&&language_from=='en'){
+    if (stage==="NORM"){
+      sRes.send(JSON.stringify({translation: message}));
+    } else if (stage==="PRE"){
+      rose.inputHandler.onPreTransateSuccess(message, opts.session, opts.language, sRes);
     } else {
-      if(opts.stage==="PRE"){
-        rose.inputHandler.onPreTransateSuccess(body[0].translations[0].text.replace(/["]+/g, ''), opts.session, opts.language, sRes);
-      } else if (opts.stage==="POST") {
-        rose.inputHandler.onPostTranslateSuccess(body[0].translations[0].text.replace(/["]+/g, ''), message, sRes);
-      } else {
-        sRes.send(JSON.stringify({translation: body[0].translations[0].text.replace(/["]+/g, '')}));
-      }
+      rose.inputHandler.onPostTranslateSuccess(message, message, sRes);
     }
-  });
+  } else {
+    let options = {
+      method: 'POST',
+      baseUrl: endpoint,
+      url: 'translate',
+      qs: {
+        'api-version': '3.0',
+        'from': language_from,
+        'to': [language_to]
+      },
+      headers: {
+        'Ocp-Apim-Subscription-Key': subscriptionKey,
+        'Content-type': 'application/json',
+        'X-ClientTraceId': uuidv4().toString()
+      },
+      body: [{
+            'text': decodeURI(message)
+      }],
+      json: true,
+    };
+    request(options, function(err, res, body){
+      if(!body[0].translations){
+        sRes.send(JSON.stringify({message: "Cannot evoke Microsoft Translator."}));
+        console.log("Cannot evoke Microsoft API at stage: " + opts.stage);
+      } else {
+        if(opts.stage==="PRE"){
+          rose.inputHandler.onPreTransateSuccess(body[0].translations[0].text.replace(/["]+/g, ''), opts.session, opts.language, sRes);
+        } else if (opts.stage==="POST") {
+          rose.inputHandler.onPostTranslateSuccess(body[0].translations[0].text.replace(/["]+/g, ''), message, sRes);
+        } else {
+          sRes.send(JSON.stringify({translation: body[0].translations[0].text.replace(/["]+/g, '')}));
+        }
+      }
+    });
+  }
 }
 
 module.exports.translate = translate;
