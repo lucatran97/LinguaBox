@@ -14,9 +14,9 @@ import com.microsoft.cognitiveservices.speech.internal.User;
 import java.util.ArrayList;
 
 public class SelectLanguageActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
-    String[] countryNames = {"Spanish","Chinese (Simplified)","German"};
-    String[] countryCodesTranslator = {"es", "zh-Hans", "de"};
-    String[] countryCodesSpeech = {"es-ES", "zh-CN", "de-DE"};
+    String[] countryNames = {"Spanish", "Chinese (Simplified)", "German", "Danish", "Dutch", "French", "Japanese", "Italian", "Russian"};
+    String[] countryCodesTranslator = {"es", "zh-Hans", "de", "da", "nl", "fr", "ja", "it", "ru"};
+    String[] countryCodesSpeech = {"es-ES", "zh-CN", "de-DE", "da-DK", "nl-NL", "fr-FR", "ja-JP", "it-IT", "ru-RU"};
     String chosenCodeTranslator = "es";
     String chosenCodeSpeech = "es-ES";
     String email;

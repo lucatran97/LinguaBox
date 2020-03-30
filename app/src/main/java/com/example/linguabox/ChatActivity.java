@@ -188,6 +188,7 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
      */
     @Override
     public void onDialogNeutralClick(DialogFragment dialog) {
+        dialog.dismiss();
         // Initialize speech synthesizer and its dependencies
         speechConfig = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
         assert(speechConfig != null);
