@@ -7,6 +7,13 @@ var dict = {};
 dict['es'] = "Spanish";
 dict['de'] = "German";
 dict['zh-Hans'] = "Chinese (Simplified)";
+dict['vi'] = "Vietnamese";
+dict['da'] = "Danish";
+dict['nl'] = "Dutch";
+dict['fr'] = "French";
+dict['it'] = "Italian";
+dict['ja'] = "Japanese";
+dict['ru'] = "Russian";
 
 var dbCRUD = {
     createListing: async function (newListing, collection, res){
@@ -66,78 +73,80 @@ var dbCRUD = {
     },
 
     updateLanguageProgress: async function (email, req_language) {
-        var date_ob = new Date();
-        var myQuery = { user_id: email, language: dict[req_language] };
-        if(validateEmail(email)){
-            try{
-                if(!isConnected()){
-                    await client.connect();
-                    console.log("Not connected. New connection now...");
-                } else {
-                    console.log("Already connected");
-                }
-                var result = await client.db("linguadb").collection("progress")
-                                    .findOne(myQuery);
-            
-                if (result) {
-                    var mess_no = result.messages_sent + 1;
-                    var progress_no = result.progress;
-                    var current_level = result.level;
-                    var previousDate = result.last_session;
-                    var c_streak = result.current_streak;
-                    var l_streak = result.longest_streak;
-                    if (mess_no % 10 == 0){
-                        progress_no++;
+        if(req_language!= 'en'){
+            var date_ob = new Date();
+            var myQuery = { user_id: email, language: dict[req_language] };
+            if(validateEmail(email)){
+                try{
+                    if(!isConnected()){
+                        await client.connect();
+                        console.log("Not connected. New connection now...");
+                    } else {
+                        console.log("Already connected");
                     }
-                    var date_result = compareDate(previousDate, date_ob);
-                    if (date_result==1){
-                        progress_no+=10;
-                        c_streak++;
-                        if(c_streak>l_streak){
-                            l_streak = c_streak;
+                    var result = await client.db("linguadb").collection("progress")
+                                        .findOne(myQuery);
+                
+                    if (result) {
+                        var mess_no = result.messages_sent + 1;
+                        var progress_no = result.progress;
+                        var current_level = result.level;
+                        var previousDate = result.last_session;
+                        var c_streak = result.current_streak;
+                        var l_streak = result.longest_streak;
+                        if (mess_no % 10 == 0){
+                            progress_no++;
                         }
-                    } else if (date_result==-1) {
-                        c_streak = 1;
-                    }
-                    if (progress_no>=100){
-                        if (current_level < 3) {
-                            progress_no = progress_no%100;
-                            current_level++;
-                        } else {
-                            progress_no = 100;
+                        var date_result = compareDate(previousDate, date_ob);
+                        if (date_result==1){
+                            progress_no+=10;
+                            c_streak++;
+                            if(c_streak>l_streak){
+                                l_streak = c_streak;
+                            }
+                        } else if (date_result==-1) {
+                            c_streak = 1;
                         }
+                        if (progress_no>=100){
+                            if (current_level < 3) {
+                                progress_no = progress_no%100;
+                                current_level++;
+                            } else {
+                                progress_no = 100;
+                            }
+                        }
+                        var newValues = { $set: {
+                            messages_sent: mess_no,
+                            last_session: date_ob,
+                            level: current_level,
+                            progress: progress_no,
+                            current_streak: c_streak,
+                            longest_streak: l_streak
+                        }};
+                        console.log(newValues);
+                        client.db("linguadb").collection("progress").updateOne(myQuery, newValues, function(err, res) {
+                            if (err) throw err;
+                            console.log("1 document updated");
+                        });
+                    } else {
+                        let newListing = {
+                            user_id: email,
+                            language: dict[req_language],
+                            last_session: date_ob,
+                            level: 1,
+                            progress: 0,
+                            messages_sent: 0,
+                            current_streak: 1,
+                            longest_streak: 1
+                        }
+                        this.createListing(newListing, "progress", null);
                     }
-                    var newValues = { $set: {
-                        messages_sent: mess_no,
-                        last_session: date_ob,
-                        level: current_level,
-                        progress: progress_no,
-                        current_streak: c_streak,
-                        longest_streak: l_streak
-                    }};
-                    console.log(newValues);
-                    client.db("linguadb").collection("progress").updateOne(myQuery, newValues, function(err, res) {
-                        if (err) throw err;
-                        console.log("1 document updated");
-                      });
-                } else {
-                    let newListing = {
-                        user_id: email,
-                        language: dict[req_language],
-                        last_session: date_ob,
-                        level: 1,
-                        progress: 0,
-                        messages_sent: 0,
-                        current_streak: 1,
-                        longest_streak: 1
-                    }
-                    this.createListing(newListing, "progress", null);
+                } catch (err) {
+                    console.log(JSON.stringify({status: "failure", message: err.toString()}));
                 }
-            } catch (err) {
-                console.log(JSON.stringify({status: "failure", message: err.toString()}));
+            } else {
+                console.log(JSON.stringify({status: "failure", message: "Invalid email"}));
             }
-        } else {
-            console.log(JSON.stringify({status: "failure", message: "Invalid email"}));
         }
     }
 }
