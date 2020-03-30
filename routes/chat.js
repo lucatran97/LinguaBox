@@ -7,7 +7,7 @@ const linguamongo = require ('../linguamongo');
 router.get('/', async function(req, res, next){
     res.setHeader('Content-Type', 'application/json');
     if(req.query!=undefined&&req.query.message!=undefined&&req.query.email!=undefined&&req.query.language!=undefined){
-        linguamongo.dbCRUD.checkLanguageProgress(req.query.email.replace(/["]+/g, ''), req.query.language);
+        linguamongo.dbCRUD.updateLanguageProgress(req.query.email.replace(/["]+/g, ''), req.query.language);
         rose.inputHandler.processChat(encodeURI(req.query.message), req.query.email, req.query.language.replace(/["]+/g, ''), res);
     } else {
         res.send(JSON.stringify({message: "Cannot recognize GET request. Maybe missing one of the parameters: message, email and/or language"}));

@@ -9,18 +9,31 @@ dict['de'] = "German";
 dict['zh-Hans'] = "Chinese (Simplified)";
 
 var dbCRUD = {
-    createListing: async function (newListing, res){
+    createListing: async function (newListing, collection, res){
         try {
-            const result = await client.db("linguadb").collection("users").insertOne(newListing);
-            console.log("res");
+            const result = await client.db("linguadb").collection(collection).insertOne(newListing);
             if (res!=null){
-                res.send(JSON.stringify({status: "success", message: "Welcome new user " + email + "!"}));
+                res.send(JSON.stringify({status: "success", progress: []}));
             }
         } catch (err) {
             console.log(err.toString());
             if (res!=null){
                 res.send(JSON.stringify({status: "failure", message: err.toString()}));
             }
+        }
+    },
+
+    retrieveProgress: async function (email, res) {
+        try {
+            const progressArray = [];
+            client.db("linguadb").collection("progress").find({ user_id: email }).toArray( function(err, result) {
+                if (err) throw err;
+                console.log(result);
+                res.send(JSON.stringify({status: "success", progress: result}));
+              });
+        } catch (err) {
+            console.log(err.toString());
+            res.send(JSON.stringify({status: "failure", message: err.toString()}));
         }
     },
 
@@ -33,16 +46,16 @@ var dbCRUD = {
                 } else {
                     console.log("Already connected");
                 }
-                result = await client.db("linguadb").collection("users")
+                const result = await client.db("linguadb").collection("users")
                                     .findOne({ user_id: email });
             
                 if (result) {
-                    res.send(JSON.stringify({status: "success", message: "Welcome back " + email + "!"}));
+                    this.retrieveProgress(email, res);
                 } else {
                     var newListing = {
                         user_id: email
                     }
-                    this.createListing(newListing, res);
+                    this.createListing(newListing,"users", res);
                 }
             } catch (err) {
                 res.send(JSON.stringify({status: "failure", message: err.toString()}));
@@ -52,9 +65,9 @@ var dbCRUD = {
         }
     },
 
-    checkLanguageProgress: async function (email, req_language) {
+    updateLanguageProgress: async function (email, req_language) {
         var date_ob = new Date();
-        var myQuery = { user_id: email };
+        var myQuery = { user_id: email, language: dict[req_language] };
         if(validateEmail(email)){
             try{
                 if(!isConnected()){
@@ -63,11 +76,46 @@ var dbCRUD = {
                 } else {
                     console.log("Already connected");
                 }
-                result = await client.db("linguadb").collection("progress")
+                var result = await client.db("linguadb").collection("progress")
                                     .findOne(myQuery);
             
                 if (result) {
-                    var newValues = { $set: {messages_sent: result.messages_sent + 1, last_session: date_ob} };
+                    var mess_no = result.messages_sent + 1;
+                    var progress_no = result.progress;
+                    var current_level = result.level;
+                    var previousDate = result.last_session;
+                    var c_streak = result.current_streak;
+                    var l_streak = result.longest_streak;
+                    if (mess_no % 10 == 0){
+                        progress_no++;
+                    }
+                    var date_result = compareDate(previousDate, date_ob);
+                    if (date_result==1){
+                        progress_no+=10;
+                        c_streak++;
+                        if(c_streak>l_streak){
+                            l_streak = c_streak;
+                        }
+                    } else if (date_result==-1) {
+                        c_streak = 1;
+                    }
+                    if (progress_no>=100){
+                        if (current_level < 3) {
+                            progress_no = progress_no%100;
+                            current_level++;
+                        } else {
+                            progress_no = 100;
+                        }
+                    }
+                    var newValues = { $set: {
+                        messages_sent: mess_no,
+                        last_session: date_ob,
+                        level: current_level,
+                        progress: progress_no,
+                        current_streak: c_streak,
+                        longest_streak: l_streak
+                    }};
+                    console.log(newValues);
                     client.db("linguadb").collection("progress").updateOne(myQuery, newValues, function(err, res) {
                         if (err) throw err;
                         console.log("1 document updated");
@@ -79,11 +127,11 @@ var dbCRUD = {
                         last_session: date_ob,
                         level: 1,
                         progress: 0,
-                        mesages_sent: 0,
+                        messages_sent: 0,
                         current_streak: 1,
                         longest_streak: 1
                     }
-                    this.createListing(newListing, null);
+                    this.createListing(newListing, "progress", null);
                 }
             } catch (err) {
                 console.log(JSON.stringify({status: "failure", message: err.toString()}));
@@ -103,6 +151,19 @@ function validateEmail(email) {
 
 function isConnected() {
     return !!client && !!client.topology && client.topology.isConnected()
-  }
+}
+
+function compareDate(previousDate, date_ob){
+    if(previousDate.getTime()+86400000<date_ob.getTime()){ 
+        console.log("Two dates are more than a day apart");
+        return -1;
+    } else if (previousDate.getDate()!=date_ob.getDate()){
+        console.log("Two dates are consecutive");
+        return 1;
+    } else {
+        console.log("Two dates are on the same day");
+        return 0;
+    }
+}
 
 module.exports.dbCRUD = dbCRUD;
