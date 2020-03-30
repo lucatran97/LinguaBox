@@ -224,16 +224,18 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
     }
 
     public void onSpeechButtonClicked(View v) {
-        Snackbar listening = Snackbar.make(findViewById(R.id.weAreListening), "Listening...", Snackbar.LENGTH_LONG);
-        listening.show();
+        //Snackbar listening = Snackbar.make(findViewById(R.id.weAreListening), "Listening...", Snackbar.LENGTH_LONG);
+        //listening.show();
         TextView txt = (TextView) this.findViewById(R.id.editText); // 'hello' is the ID of your text view
-        Log.w("Language Code", "Language Code = " + languageTextToSpeech);
+        Log.w("Language Code", "Language Code = " + languageTranslator);
         try {
             SpeechTranslationConfig config = SpeechTranslationConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
 
             assert (config != null);
-            String fromLanguage = languageTextToSpeech;
-            String toLanguage = languageTextToSpeech;
+            String fromLanguage = languageTranslator;
+            String toLanguage = languageTranslator;
+            Log.w("Language Code", "fromLanguage = " + fromLanguage);
+            Log.w("Language Code", "toLanguage = " + toLanguage);
             config.setSpeechRecognitionLanguage(fromLanguage);
             config.addTargetLanguage(toLanguage);
 
@@ -254,18 +256,6 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
                 trimmedResult.trim();
                 trimmedResult = trimmedResult.split(">")[0];
                 txt.setText(trimmedResult);
-            } else if (result.getReason() == ResultReason.TranslatedSpeech) {
-                String rawResult = result.toString();
-                String trimmedResult = rawResult.substring(rawResult.indexOf("<") + 1);
-                trimmedResult.trim();
-                trimmedResult = trimmedResult.split(">")[0];
-                txt.setText(trimmedResult);
-            } else if (result.getReason() == ResultReason.Canceled) {
-                String rawResult = result.toString();
-                String trimmedResult = rawResult.substring(rawResult.indexOf("<") + 1);
-                trimmedResult.trim();
-                trimmedResult = trimmedResult.split(">")[0];
-                txt.setText(result.toString());
             } else {
 
                 txt.setText("Error recognizing. Did you update the subscription info?" + System.lineSeparator() + result.toString());
