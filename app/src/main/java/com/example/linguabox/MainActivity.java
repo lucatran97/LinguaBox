@@ -110,26 +110,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class MongodbLog implements Callable<String> {
-        String email;
-
-        public MongodbLog(String email) {
-            this.email = email;
-        }
-
-        @Override
-        public String call() throws Exception {
-            try {
-                return HttpRequest.signIn(email);
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw e;
-            }
-        }
-    }
-
     @Override
     public void onBackPressed() {
         // This is to disable users' pressing the back button after signing out
+    }
+}
+
+class MongodbLog implements Callable<String> {
+    String email;
+
+    public MongodbLog(String email) {
+        this.email = email;
+    }
+
+    @Override
+    public String call() throws Exception {
+        try {
+            return HttpRequest.signIn(email);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 }
