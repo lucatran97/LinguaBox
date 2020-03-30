@@ -27,7 +27,12 @@ var dbCRUD = {
     signInHandler: async function (email, res) {
         if(validateEmail(email)){
             try{
-                await client.connect();
+                if(!isConnected()){
+                    await client.connect();
+                    console.log("Not connected. New connection now...");
+                } else {
+                    console.log("Already connected");
+                }
                 result = await client.db("linguadb").collection("users")
                                     .findOne({ user_id: email });
             
@@ -52,7 +57,12 @@ var dbCRUD = {
         var myQuery = { user_id: email };
         if(validateEmail(email)){
             try{
-                await client.connect();
+                if(!isConnected()){
+                    await client.connect();
+                    console.log("Not connected. New connection now...");
+                } else {
+                    console.log("Already connected");
+                }
                 result = await client.db("linguadb").collection("progress")
                                     .findOne(myQuery);
             
@@ -90,5 +100,9 @@ function validateEmail(email) {
     }
       return (false);
 }
+
+function isConnected() {
+    return !!client && !!client.topology && client.topology.isConnected()
+  }
 
 module.exports.dbCRUD = dbCRUD;
