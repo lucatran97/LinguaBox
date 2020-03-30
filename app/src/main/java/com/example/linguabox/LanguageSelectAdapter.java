@@ -5,30 +5,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 public class LanguageSelectAdapter extends BaseAdapter {
     Context context;
-    int flags[];
     String[] countryNames;
-    String[] countryCodesTranslator;
-    String[] countryCodesTextToSpeech;
     LayoutInflater inflter;
 
-    public LanguageSelectAdapter(Context applicationContext, int[] flags, String[] countryNames, String[] countryCodesTranslator, String[] countryCodesTextToSpeech) {
+    public LanguageSelectAdapter(Context applicationContext, String[] countryNames) {
         this.context = applicationContext;
-        this.flags = flags;
         this.countryNames = countryNames;
-        this.countryCodesTranslator = countryCodesTranslator;
-        this.countryCodesTextToSpeech = countryCodesTextToSpeech;
         inflter = (LayoutInflater.from(applicationContext));
     }
 
     @Override
-    public int getCount() {
-        return flags.length;
-    }
+    public int getCount() { return countryNames.length; }
 
     @Override
     public String getItem(int i) {
@@ -43,9 +34,7 @@ public class LanguageSelectAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         view = inflter.inflate(R.layout.custom_spinner_item, null);
-        ImageView icon = (ImageView) view.findViewById(R.id.imageView);
         TextView names = (TextView) view.findViewById(R.id.textView);
-        icon.setImageResource(flags[i]);
         names.setText(countryNames[i]);
         return view;
     }

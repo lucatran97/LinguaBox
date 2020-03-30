@@ -4,9 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -30,12 +34,14 @@ public class MainActivity extends AppCompatActivity {
     GoogleSignInClient client;
     SignInButton signInButton;
     private ExecutorService es;
+    private ProgressBar spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_in_google);
-
+        spinner = (ProgressBar) findViewById(R.id.progressBar);
+        spinner.setVisibility(View.GONE);
         // Initialize Sign-In Button
         signInButton = findViewById(R.id.sign_in_button);
         es = Executors.newSingleThreadExecutor();
@@ -64,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void signIn() {
+        spinner.setVisibility(View.VISIBLE);
         Intent signInIntent = client.getSignInIntent();
         startActivityForResult(signInIntent, SIGNED_IN);
     }
@@ -79,22 +86,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             Log.w("Sign In Success", "Sign In Successful !!");
-            Toast.makeText(MainActivity.this, "SIGN IN SUCCESSFUL!", Toast.LENGTH_LONG).show();
             assert account != null;
             Future<String> result = es.submit(new MongodbLog(account.getEmail()));
             try {
-                Log.w("Response", result.get());
+                result.get();
+                spinner.setVisibility(View.GONE);
+                Toast.makeText(MainActivity.this, "SIGN IN SUCCESSFUL!", Toast.LENGTH_LONG).show();
+                UserAccount.setAccount(account.getEmail(), account.getGivenName(), account.getFamilyName());
+                Intent mainMenu = new Intent(getApplicationContext(), MenuActivity.class);
+                startActivity(mainMenu);
             } catch (Exception e) {
-                e.printStackTrace();
+                spinner.setVisibility(View.GONE);
+                Toast.makeText(MainActivity.this, "Server is booting or not available. Please try again in a moment.", Toast.LENGTH_LONG).show();
+                client.signOut();
             }
-            UserAccount.setAccount(account.getEmail(), account.getGivenName(), account.getFamilyName());
-            Intent mainMenu = new Intent(getApplicationContext(), MenuActivity.class);
-            startActivity(mainMenu);
-
         } catch (ApiException e) {
             e.printStackTrace();
             Log.w("Sign In Error", "Sign In Failed. Failed Code =" + e.getStatusCode());
@@ -104,13 +112,19 @@ public class MainActivity extends AppCompatActivity {
 
     private class MongodbLog implements Callable<String> {
         String email;
-        public MongodbLog(String email){
+
+        public MongodbLog(String email) {
             this.email = email;
         }
 
         @Override
         public String call() throws Exception {
-            return HttpRequest.signIn(email);
+            try {
+                return HttpRequest.signIn(email);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw e;
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.example.linguabox;
 
+import androidx.core.app.ActivityCompat;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
@@ -23,6 +25,11 @@ import com.microsoft.cognitiveservices.speech.ResultReason;
 import com.microsoft.cognitiveservices.speech.SpeechConfig;
 import com.microsoft.cognitiveservices.speech.SpeechSynthesisResult;
 import com.microsoft.cognitiveservices.speech.SpeechSynthesizer;
+import com.google.android.material.snackbar.Snackbar;
+import com.microsoft.cognitiveservices.speech.translation.SpeechTranslationConfig;
+import com.microsoft.cognitiveservices.speech.translation.TranslationRecognitionResult;
+import com.microsoft.cognitiveservices.speech.translation.TranslationRecognizer;
+import static android.Manifest.permission.*;
 
 public class ChatActivity extends AppCompatActivity implements HelperDialogFragment.HelperDialogListener {
     private EditText editText;
@@ -30,12 +37,13 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
     private ListView messagesView;
     private ExecutorService es;
     String languageTranslator;
-    String languageTextToSpeech;
+    String languageSpeech;
     String name;
     String email;
     int selectedMessagePos = -1;
     Set<Integer> translatedMessage;
     Message selectedMessage;
+  
     private static String speechSubscriptionKey = "9d1cb6dc1aff4b6ab5ab311b84f642a5";
     private static String serviceRegion = "eastus";
     private SpeechConfig speechConfig;
@@ -53,7 +61,7 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
         Intent intent = this.getIntent();
         UserAccount.verifySignIn(getApplicationContext(), this);
         languageTranslator = intent.getStringExtra("language_translator");
-        languageTextToSpeech = intent.getStringExtra("language_text_to_speech");
+        languageSpeech = intent.getStringExtra("language_speech");
         email = UserAccount.getUserEmail();
         name = UserAccount.getUserGivenName();
         editText = findViewById(R.id.editText);
@@ -62,6 +70,10 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
         messagesView.setAdapter(messageAdapter);
         messagesView.setLongClickable(true);
         translatedMessage = new HashSet<>();
+
+
+        int requestCode = 5; // unique code for the permission request
+        ActivityCompat.requestPermissions(ChatActivity.this, new String[]{RECORD_AUDIO, INTERNET}, requestCode);
 
         //LONG CLICK FUNCTION HERE
         messagesView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -177,7 +189,7 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
         if(translatedMessage.contains(selectedMessagePos)) {
             speechConfig.setSpeechSynthesisLanguage("en-US");
         } else {
-            speechConfig.setSpeechSynthesisLanguage(languageTextToSpeech);
+            speechConfig.setSpeechSynthesisLanguage(languageSpeech);
         }
         synthesizer = new SpeechSynthesizer(speechConfig);
         assert(synthesizer != null);
@@ -206,6 +218,49 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
         dialog.dismiss();
+    }
+
+    public void onSpeechButtonClicked(View v) {
+        //Snackbar listening = Snackbar.make(findViewById(R.id.weAreListening), "Listening...", Snackbar.LENGTH_LONG);
+        //listening.show();
+        TextView txt = (TextView) this.findViewById(R.id.editText); // 'hello' is the ID of your text view
+        Log.w("Language Code", "Language Code = " + languageSpeech);
+        try {
+            SpeechTranslationConfig config = SpeechTranslationConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
+
+            assert(config != null);
+            String fromLanguage = languageSpeech;
+            String toLanguage = languageSpeech;
+            config.setSpeechRecognitionLanguage(fromLanguage);
+            config.addTargetLanguage(toLanguage);
+
+            TranslationRecognizer reco = new TranslationRecognizer(config);
+            assert (reco != null);
+
+            Future<TranslationRecognitionResult> task = reco.recognizeOnceAsync();
+            assert (task != null);
+
+            // Note: this will block the UI thread, so eventually, you want to
+            //        register for the event (see full samples)
+            TranslationRecognitionResult result = task.get();
+            assert (result != null);
+
+            if (result.getReason() == ResultReason.TranslatedSpeech) {
+                String rawResult = result.toString();
+                String trimmedResult = rawResult.substring(rawResult.indexOf("<") + 1);
+                trimmedResult.trim();
+                trimmedResult = trimmedResult.split(">")[0];
+                txt.setText(trimmedResult);
+            } else {
+
+                txt.setText("Error recognizing. Did you update the subscription info?" + System.lineSeparator() + result.toString());
+            }
+
+            reco.close();
+        } catch (Exception ex) {
+            Log.e("SpeechSDKDemo", "unexpected " + ex.getMessage());
+            assert (false);
+        }
     }
 
     @Override

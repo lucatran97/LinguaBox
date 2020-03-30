@@ -69,16 +69,16 @@ public class HttpRequest {
         }
     }
 
-    public static String signIn(String email){
+    public static String signIn(String email) throws IOException, JSONException {
         try {
             JSONObject mainObject = post("https://linguabox.azurewebsites.net/users", "{\"email\": \""+email+"\"}");
             return mainObject.getString("message");
         } catch (IOException e) {
             e.printStackTrace();
-            return "Cannot connect to \'/users\'.";
+            throw e;
         } catch (JSONException e) {
             e.printStackTrace();
-            return "Invalid response from server.";
+            throw e;
         }
     }
 }

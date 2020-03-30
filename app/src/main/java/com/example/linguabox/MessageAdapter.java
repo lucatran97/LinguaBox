@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ public class MessageAdapter extends BaseAdapter {
 
         public MessageAdapter(Context context) {
             this.context = context;
+
         }
 
         public void add(Message message) {
@@ -56,7 +58,7 @@ public class MessageAdapter extends BaseAdapter {
             MessageViewHolder holder = new MessageViewHolder();
             LayoutInflater messageInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             Message message = messages.get(i);
-
+            int anger;
             if (message.isBelongsToCurrentUser()) { // this message was sent by us so let's create a basic chat bubble on the right
                 convertView = messageInflater.inflate(R.layout.my_message, null);
                 holder.messageBody = (TextView) convertView.findViewById(R.id.message_body);

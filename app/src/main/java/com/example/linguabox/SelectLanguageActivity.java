@@ -12,19 +12,17 @@ import androidx.appcompat.app.AppCompatActivity;
 public class SelectLanguageActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     String[] countryNames = {"Spanish","Chinese (Simplified)","German"};
     String[] countryCodesTranslator = {"es", "zh-Hans", "de"};
-    String[] countryCodesTextToSpeech = {"es-ES", "zh-CN", "de-DE"};
+    String[] countryCodesSpeech = {"es-ES", "zh-CN", "de-DE"};
     String chosenCodeTranslator = "es";
-    String chosenCodeTextToSpeech = "es-ES";
+    String chosenCodeSpeech = "es-ES";
     String email;
     String name;
-    int flags[] = {R.drawable.spanish, R.drawable.chinese, R.drawable.german};
     Button continueButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_language);
-        Intent intent = this.getIntent();
         UserAccount.verifySignIn(getApplicationContext(), this);
         email = UserAccount.getUserEmail();
         name = UserAccount.getUserGivenName();
@@ -33,7 +31,7 @@ public class SelectLanguageActivity extends AppCompatActivity implements Adapter
             public void onClick(View v) {
                 Intent startChat = new Intent(getApplicationContext(), ChatActivity.class);
                 startChat.putExtra("language_translator", chosenCodeTranslator);
-                startChat.putExtra("language_text_to_speech", chosenCodeTextToSpeech);
+                startChat.putExtra("language_speech", chosenCodeSpeech);
                 startActivity(startChat);
             }
         });
@@ -43,7 +41,7 @@ public class SelectLanguageActivity extends AppCompatActivity implements Adapter
         Spinner spin = (Spinner) findViewById(R.id.simpleSpinner);
         spin.setOnItemSelectedListener(this);
 
-        LanguageSelectAdapter customAdapter = new LanguageSelectAdapter(getApplicationContext(),flags,countryNames, countryCodesTranslator, countryCodesTextToSpeech);
+        LanguageSelectAdapter customAdapter = new LanguageSelectAdapter(getApplicationContext(), countryNames);
         spin.setAdapter(customAdapter);
     }
 
@@ -52,7 +50,7 @@ public class SelectLanguageActivity extends AppCompatActivity implements Adapter
     @Override
     public void onItemSelected(AdapterView<?> arg0, View arg1, int position,long id) {
         chosenCodeTranslator = countryCodesTranslator[position];
-        chosenCodeTextToSpeech = countryCodesTextToSpeech[position];
+        chosenCodeSpeech = countryCodesSpeech[position];
     }
 
     @Override
