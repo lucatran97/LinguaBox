@@ -1,5 +1,8 @@
 package com.example.linguabox;
 
+import android.util.Log;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
@@ -42,6 +45,14 @@ public class HttpRequest {
         }
     }
 
+    public static String publicPostGetString(String url, String json) throws IOException, JSONException {
+        JSONObject response =  post(url,json);
+        Log.e("RESPONSE", response.toString());
+        String translation = response.getString("translation");
+        return  translation;
+    }
+
+
     private static String parseMessage(String message, String email, String language){
         return "{\"message\": \""+message+"\", \"email\": \""+email+"\", \"language\": \""+language+"\"}";
     }
@@ -62,7 +73,9 @@ public class HttpRequest {
     public static String signIn(String email) throws IOException, JSONException {
         try {
             JSONObject mainObject = post("https://linguabox.azurewebsites.net/users", "{\"email\": \""+email+"\"}");
-            return mainObject.getString("message");
+            JSONArray mainArray = mainObject.getJSONArray("progress");
+            UserAccount.setProgress(mainArray);
+            return mainObject.getString("status");
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
