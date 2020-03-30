@@ -221,8 +221,8 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
     }
 
     public void onSpeechButtonClicked(View v) {
-        Snackbar listening = Snackbar.make(findViewById(R.id.weAreListening), "Listening...", Snackbar.LENGTH_LONG);
-        listening.show();
+        //Snackbar listening = Snackbar.make(findViewById(R.id.weAreListening), "Listening...", Snackbar.LENGTH_LONG);
+        //listening.show();
         TextView txt = (TextView) this.findViewById(R.id.editText); // 'hello' is the ID of your text view
         Log.w("Language Code", "Language Code = " + languageSpeech);
         try {
@@ -235,24 +235,23 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
             config.addTargetLanguage(toLanguage);
 
             TranslationRecognizer reco = new TranslationRecognizer(config);
-            assert(reco != null);
+            assert (reco != null);
 
             Future<TranslationRecognitionResult> task = reco.recognizeOnceAsync();
-            assert(task != null);
+            assert (task != null);
 
             // Note: this will block the UI thread, so eventually, you want to
             //        register for the event (see full samples)
             TranslationRecognitionResult result = task.get();
-            assert(result != null);
+            assert (result != null);
 
-            if (result.getReason() == ResultReason.RecognizedSpeech) {
+            if (result.getReason() == ResultReason.TranslatedSpeech) {
                 String rawResult = result.toString();
                 String trimmedResult = rawResult.substring(rawResult.indexOf("<") + 1);
                 trimmedResult.trim();
                 trimmedResult = trimmedResult.split(">")[0];
                 txt.setText(trimmedResult);
-            }
-            else {
+            } else {
 
                 txt.setText("Error recognizing. Did you update the subscription info?" + System.lineSeparator() + result.toString());
             }
@@ -260,7 +259,7 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
             reco.close();
         } catch (Exception ex) {
             Log.e("SpeechSDKDemo", "unexpected " + ex.getMessage());
-            assert(false);
+            assert (false);
         }
     }
 
