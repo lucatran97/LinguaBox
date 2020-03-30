@@ -44,4 +44,8 @@ public class UserAccount {
             caller.startActivity(back);
         }
     }
+
+    class LanguageProgress {
+        String languageName;
+    }
 }
