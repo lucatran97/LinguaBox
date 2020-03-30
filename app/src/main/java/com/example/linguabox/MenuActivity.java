@@ -39,10 +39,12 @@ public class MenuActivity extends AppCompatActivity {
                 startActivity(selectLanguage);
             }
         });
+
         translate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent translator = new Intent(getApplicationContext(), TranslatorActivity.class);
+                startActivity(translator);
             }
         });
         profile.setOnClickListener(new View.OnClickListener() {

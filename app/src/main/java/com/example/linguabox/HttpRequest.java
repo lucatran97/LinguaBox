@@ -45,6 +45,14 @@ public class HttpRequest {
         }
     }
 
+    public static String publicPostGetString(String url, String json) throws IOException, JSONException {
+        JSONObject response =  post(url,json);
+        Log.e("RESPONSE", response.toString());
+        String translation = response.getString("translation");
+        return  translation;
+    }
+
+
     private static String parseMessage(String message, String email, String language){
         return "{\"message\": \""+message+"\", \"email\": \""+email+"\", \"language\": \""+language+"\"}";
     }

@@ -2,10 +2,84 @@
     <string name="app_name">LinguaBox</string>
     <string name="input_placeholder">Write a message</string>
     <string name="welcome">Welcome to LinguaBox</string>
+    <string name="translate">TRANSLATE</string>
+    <string name="title">TRANSLATOR MACHINE</string>
+    <string-array name="language_list">
+        <item>Afrikaans</item>
+        <item>Arabic</item>
+        <item>Bangla</item>
+        <item>Bosnian (Latin)</item>
+        <item>Bulgarian</item>
+        <item>Cantonese (Traditional)</item>
+        <item>Catalan</item>
+        <item>Chinese Simplified</item>
+        <item>Chinese Traditional</item>
+        <item>Croatian</item>
+        <item>Czech</item>
+        <item>Danish</item>
+        <item>Dutch</item>
+        <item>English</item>
+        <item>Estonian</item>
+        <item>Fijian</item>
+        <item>Filipino</item>
+        <item>Finnish</item>
+        <item>French</item>
+        <item>German</item>
+        <item>Greek</item>
+        <item>Finnish</item>
+        <item>Haitian Creole</item>
+        <item>Hebrew</item>
+        <item>Hindi</item>
+        <item>Hmong Daw</item>
+        <item>Hungarian</item>
+        <item>Icelandic</item>
+        <item>Indonesian</item>
+        <item>Irish</item>
+        <item>Italian</item>
+        <item>Japanese</item>
+        <item>Kannada</item>
+        <item>Kiswahili</item>
+        <item>Klingon</item>
+        <item>Klingon (plqaD)</item>
+        <item>Korean</item>
+        <item>Latvian</item>
+        <item>Lithuanian</item>
+        <item>Malagasy</item>
+        <item>Malay</item>
+        <item>Malayalam</item>
+        <item>Maltese</item>
+        <item>Maori</item>
+        <item>Norwegian</item>
+        <item>Persian</item>
+        <item>Polish</item>
+        <item>Portuguese (Brazil)</item>
+        <item>Portuguese (Portugal)</item>
+        <item>Punjabi</item>
+        <item>Queretaro Otomi</item>
+        <item>Romanian</item>
+        <item>Russian</item>
+        <item>Samoan</item>
+        <item>Serbian (Cyrillic)</item>
+        <item>Serbian (Latin)</item>
+        <item>Slovak</item>
+        <item>Slovenian</item>
+        <item>Spanish</item>
+        <item>Swedish</item>
+        <item>Tahitian</item>
+        <item>Tamil</item>
+        <item>Telugu</item>
+        <item>Thai</item>
+        <item>Tongan</item>
+        <item>Turkish</item>
+        <item>Ukrainian</item>
+        <item>Urdu</item>
+        <item>Vietnamese</item>
+        <item>Welsh</item>
+        <item>Yucatec Maya</item>
+    </string-array>
     <string name="hello">Hello</string>
     <string name="select_language">Select your language</string>
     <string name="continue_button">Continue</string>
-    <string name="translate">Translate</string>
     <string name="listen">Listen</string>
     <string name="cancel">Cancel</string>
     <string name="translation_button_description">Translate</string>
