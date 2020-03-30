@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/option_menu"
+        android:title="@string/option_menu" />
+    <item
+        android:id="@+id/option_language_select"
+        android:title="@string/option_language_select" />
+    <item
+        android:id="@+id/option_sign_out"
+        android:title="@string/option_sign_out" />
+</menu>

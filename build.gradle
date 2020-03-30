@@ -18,10 +18,9 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven {
-                 url 'https://maven.google.com'
-             }
-        }
+        maven { url 'https://maven.google.com' }
+        maven { url 'https://csspeechstorage.blob.core.windows.net/maven/' }
+    }
 }
 
 task clean(type: Delete) {

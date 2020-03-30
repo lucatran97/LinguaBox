@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">LinguaBox</string>
+    <string name="input_placeholder">Write a message</string>
     <string name="welcome">Welcome to LinguaBox</string>
     <string name="translate">TRANSLATE</string>
     <string name="title">TRANSLATOR MACHINE</string>
@@ -76,4 +77,18 @@
         <item>Welsh</item>
         <item>Yucatec Maya</item>
     </string-array>
+    <string name="hello">Hello</string>
+    <string name="select_language">Select your language</string>
+    <string name="continue_button">Continue</string>
+    <string name="listen">Listen</string>
+    <string name="cancel">Cancel</string>
+    <string name="translation_button_description">Translate</string>
+    <string name="listen_button_description">Listen</string>
+    <string name="option_menu">Main Menu</string>
+    <string name="option_language_select">Language Select</string>
+    <string name="option_sign_out">Sign Out</string>
+    <string name="menu_chat_button">Chat &amp; Learn</string>
+    <string name="menu_profile_button">Your Profile</string>
+    <string name="menu_not_you">Not You?</string>
+>>>>>>> 7d9d4b188f074849b97fc4042921304fa4e7dd72
 </resources>
