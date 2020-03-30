@@ -25,10 +25,12 @@ var translate = async function(message, opts, sRes){
     language_to = opts.language?opts.language:'es';
     language_from = 'en';
   }
-  if (language_to===language_from&&language_from=='en'){
-    if (stage==="NORM"){
+  console.log(language_from);
+  console.log(language_to);
+  if (language_to===language_from&&language_from==='en'){
+    if (opts.stage==="NORM"){
       sRes.send(JSON.stringify({translation: message}));
-    } else if (stage==="PRE"){
+    } else if (opts.stage==="PRE"){
       rose.inputHandler.onPreTransateSuccess(message, opts.session, opts.language, sRes);
     } else {
       rose.inputHandler.onPostTranslateSuccess(message, message, sRes);

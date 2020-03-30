@@ -149,6 +149,8 @@ var dbCRUD = {
             } else {
                 console.log(JSON.stringify({status: "failure", message: "Invalid email"}));
             }
+        } else {
+            rose.inputHandler.onQuerySuccess(message, email, target_language, sRes, 3);
         }
     }
 }
