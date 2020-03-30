@@ -38,7 +38,7 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
         if(userProgress.size()==0){
             spin.setVisibility(View.GONE);
             progressView.setVisibility(View.GONE);
-            instructionText.setText("You have not chatted in any language.");
+            instructionText.setText("You have not chatted in any language. Try hitting the \"Refresh\" button (under upper-right corner option menu) if you chatted with the bot just now.");
         } else {
             languageNames = new String[userProgress.size()];
             for (int i = 0; i < userProgress.size(); i++){

@@ -20,11 +20,12 @@ import java.util.List;
 public class MessageAdapter extends BaseAdapter {
 
         List<Message> messages = new ArrayList<>();
+        String difficulty;
         Context context;
 
-        public MessageAdapter(Context context) {
+        public MessageAdapter(Context context, String difficulty) {
             this.context = context;
-
+            this.difficulty = difficulty;
         }
 
         public void add(Message message) {
@@ -70,6 +71,13 @@ public class MessageAdapter extends BaseAdapter {
                 holder.name = (TextView) convertView.findViewById(R.id.name);
                 holder.messageBody = (TextView) convertView.findViewById(R.id.message_body);
                 convertView.setTag(holder);
+                if(difficulty.equals("Basic")){
+                    holder.name.setText("Rose");
+                } else if (difficulty.equals("Intermediate")) {
+                    holder.name.setText("Lingua");
+                } else {
+                    holder.name.setText("Franca");
+                }
 
                 holder.messageBody.setText(message.getText());
                 GradientDrawable drawable = (GradientDrawable) holder.avatar.getBackground();

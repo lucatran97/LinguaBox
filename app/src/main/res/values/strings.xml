@@ -95,4 +95,6 @@
     <string name="demo">Demo</string>
     <string name="menu_profile_close">Close</string>
     <string name="menu_profile_refresh">Refresh</string>
+    <string name="input_text_here">Input text here</string>
+    <string name="translated_text_will_be_displayed_here">Translated text will be displayed here</string>
 </resources>

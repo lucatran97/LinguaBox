@@ -9,6 +9,10 @@ import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.microsoft.cognitiveservices.speech.internal.User;
+
+import java.util.ArrayList;
+
 public class SelectLanguageActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     String[] countryNames = {"Spanish","Chinese (Simplified)","German"};
     String[] countryCodesTranslator = {"es", "zh-Hans", "de"};
@@ -17,13 +21,16 @@ public class SelectLanguageActivity extends AppCompatActivity implements Adapter
     String chosenCodeSpeech = "es-ES";
     String email;
     String name;
+    String level = "Basic";
     Button continueButton;
+    ArrayList<LanguageProgress> userProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_language);
         UserAccount.verifySignIn(getApplicationContext(), this);
+        userProgress = UserAccount.getProgress();
         email = UserAccount.getUserEmail();
         name = UserAccount.getUserGivenName();
         continueButton = (Button) findViewById(R.id.continue_button);
@@ -32,6 +39,7 @@ public class SelectLanguageActivity extends AppCompatActivity implements Adapter
                 Intent startChat = new Intent(getApplicationContext(), ChatActivity.class);
                 startChat.putExtra("language_translator", chosenCodeTranslator);
                 startChat.putExtra("language_speech", chosenCodeSpeech);
+                startChat.putExtra("level", level);
                 startActivity(startChat);
             }
         });
@@ -51,6 +59,11 @@ public class SelectLanguageActivity extends AppCompatActivity implements Adapter
     public void onItemSelected(AdapterView<?> arg0, View arg1, int position,long id) {
         chosenCodeTranslator = countryCodesTranslator[position];
         chosenCodeSpeech = countryCodesSpeech[position];
+        for(int i = 0; i < userProgress.size(); i++){
+            if (userProgress.get(i).getLanguageName().equals(countryNames[position])){
+                level = userProgress.get(i).getLevel();
+            }
+        }
     }
 
     @Override

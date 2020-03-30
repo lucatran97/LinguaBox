@@ -25,6 +25,7 @@ public class UserAccount {
     }
 
     public static void setProgress(JSONArray array){
+        userProgress = new ArrayList<>();
         for (int i = 0; i< array.length(); i++){
             try {
                 userProgress.add(new LanguageProgress(array.getJSONObject(i)));
