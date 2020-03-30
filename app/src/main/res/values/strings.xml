@@ -94,4 +94,7 @@
     <string name="profile_instruction">Your progress for each language you have chosen in chat is shown below. Select a language from the dropdown to see your progress.</string>
     <string name="demo">Demo</string>
     <string name="menu_profile_close">Close</string>
+    <string name="menu_profile_refresh">Refresh</string>
+    <string name="input_text_here">Input text here</string>
+    <string name="translated_text_will_be_displayed_here">Translated text will be displayed here</string>
 </resources>
