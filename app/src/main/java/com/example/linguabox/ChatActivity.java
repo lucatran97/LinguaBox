@@ -250,7 +250,7 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
             TranslationRecognitionResult result = task.get();
             assert (result != null);
 
-            if (result.getReason() == ResultReason.RecognizedSpeech) {
+            if (result.getReason() == ResultReason.TranslatedSpeech) {
                 String rawResult = result.toString();
                 String trimmedResult = rawResult.substring(rawResult.indexOf("<") + 1);
                 trimmedResult.trim();
