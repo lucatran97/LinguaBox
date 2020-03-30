@@ -2,6 +2,7 @@ const MongoClient = require('mongodb').MongoClient;
 
 const uri = "mongodb+srv://trung_nguyen:linguabox@linguabox-no2v7.azure.mongodb.net/admin";
 const client = new MongoClient(uri, { useNewUrlParser: true });
+const rose = require('./rose');
 
 var dict = {};
 dict['es'] = "Spanish";
@@ -72,10 +73,10 @@ var dbCRUD = {
         }
     },
 
-    updateLanguageProgress: async function (email, req_language) {
-        if(req_language != 'en'){
+    updateLanguageProgress: async function (message, email, target_language, sRes) {
+        if(target_language != 'en'){
             var date_ob = new Date();
-            var myQuery = { user_id: email, language: dict[req_language] };
+            var myQuery = { user_id: email, language: dict[target_language] };
             if(validateEmail(email)){
                 try{
                     if(!isConnected()){
@@ -91,6 +92,7 @@ var dbCRUD = {
                         var mess_no = result.messages_sent + 1;
                         var progress_no = result.progress;
                         var current_level = result.level;
+                        rose.inputHandler.onQuerySuccess(message, email, target_language, sRes, current_level);
                         var previousDate = result.last_session;
                         var c_streak = result.current_streak;
                         var l_streak = result.longest_streak;
@@ -131,7 +133,7 @@ var dbCRUD = {
                     } else {
                         let newListing = {
                             user_id: email,
-                            language: dict[req_language],
+                            language: dict[target_language],
                             last_session: date_ob,
                             level: 1,
                             progress: 0,
