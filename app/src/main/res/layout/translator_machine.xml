@@ -6,18 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <EditText
-        android:id="@+id/textbox2"
-        android:layout_width="297dp"
-        android:layout_height="186dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.91" />
-
     <Spinner
         android:id="@+id/language_list_2"
         android:layout_width="163dp"
@@ -51,30 +39,46 @@
         app:layout_constraintVertical_bias="0.427" />
 
     <EditText
-        android:id="@+id/textbox1"
+        android:id="@+id/input"
         android:layout_width="297dp"
         android:layout_height="186dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="        "
+        android:text="Input text here"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.144" />
+        app:layout_constraintVertical_bias="0.141" />
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="237dp"
-        android:layout_height="46dp"
+        android:layout_width="225dp"
+        android:layout_height="45dp"
         android:text="@string/title"
+        android:textAlignment="gravity"
         android:textColor="#3F51B5"
+        android:textDirection="firstStrong"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.591"
+        app:layout_constraintHorizontal_bias="0.557"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.046" />
+
+    <TextView
+        android:id="@+id/output"
+        android:layout_width="335dp"
+        android:layout_height="184dp"
+        android:text="Translated text will be displayed here"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.909" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
