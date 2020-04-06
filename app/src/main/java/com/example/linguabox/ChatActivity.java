@@ -3,6 +3,7 @@ package com.example.linguabox;
 import androidx.core.app.ActivityCompat;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,6 +44,7 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
     int selectedMessagePos = -1;
     Set<Integer> translatedMessage;
     Message selectedMessage;
+    String difficulty;
   
     private static String speechSubscriptionKey = "9d1cb6dc1aff4b6ab5ab311b84f642a5";
     private static String serviceRegion = "eastus";
@@ -59,17 +61,20 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         Intent intent = this.getIntent();
+        difficulty = intent.getStringExtra("level");
         UserAccount.verifySignIn(getApplicationContext(), this);
         languageTranslator = intent.getStringExtra("language_translator");
         languageSpeech = intent.getStringExtra("language_speech");
         email = UserAccount.getUserEmail();
         name = UserAccount.getUserGivenName();
         editText = findViewById(R.id.editText);
-        messageAdapter = new MessageAdapter(this);
+        editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(200)});
+        messageAdapter = new MessageAdapter(this, difficulty);
         messagesView = findViewById(R.id.messages_view);
         messagesView.setAdapter(messageAdapter);
         messagesView.setLongClickable(true);
         translatedMessage = new HashSet<>();
+
 
 
         int requestCode = 5; // unique code for the permission request
@@ -183,6 +188,7 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
      */
     @Override
     public void onDialogNeutralClick(DialogFragment dialog) {
+        dialog.dismiss();
         // Initialize speech synthesizer and its dependencies
         speechConfig = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
         assert(speechConfig != null);
@@ -230,7 +236,7 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
 
             assert(config != null);
             String fromLanguage = languageSpeech;
-            String toLanguage = languageSpeech;
+            String toLanguage = "en";
             config.setSpeechRecognitionLanguage(fromLanguage);
             config.addTargetLanguage(toLanguage);
 

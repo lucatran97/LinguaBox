@@ -2,6 +2,7 @@ package com.example.linguabox;
 
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
@@ -72,7 +73,9 @@ public class HttpRequest {
     public static String signIn(String email) throws IOException, JSONException {
         try {
             JSONObject mainObject = post("https://linguabox.azurewebsites.net/users", "{\"email\": \""+email+"\"}");
-            return mainObject.getString("message");
+            JSONArray mainArray = mainObject.getJSONArray("progress");
+            UserAccount.setProgress(mainArray);
+            return mainObject.getString("status");
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
