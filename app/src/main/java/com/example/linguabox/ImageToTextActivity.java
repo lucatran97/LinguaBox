@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -99,7 +100,6 @@ public class ImageToTextActivity extends AppCompatActivity {
         findViewById(R.id.capture_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                File file = new File(Environment.getExternalStorageDirectory() + "/" + System.currentTimeMillis() + ".jpg");
                 imgCap.takePicture(ex, new ImageCapture.OnImageCapturedListener() {
                     @Override
                     public void onCaptureSuccess(ImageProxy image, int rotationDegrees) {
@@ -120,16 +120,9 @@ public class ImageToTextActivity extends AppCompatActivity {
                                                 // Task completed successfully
                                                 String resultText = firebaseVisionText.getText();
                                                 Log.i("RESULT", resultText);
-                                                for (FirebaseVisionText.TextBlock block: firebaseVisionText.getTextBlocks()) {
-                                                    Float blockConfidence = block.getConfidence();
-                                                    List<RecognizedLanguage> blockRecognizedLanguages = block.getRecognizedLanguages();
-                                                    if(blockConfidence!=null){
-                                                        Log.i("CONFIDENCE", blockConfidence.toString());
-                                                    }
-                                                    if(blockRecognizedLanguages.size()>0){
-                                                        Log.i("LANGUAGE", blockRecognizedLanguages.get(0).toString());
-                                                    }
-                                                }
+                                                Intent imageTranslator = new Intent(getApplicationContext(),ImageToTranslationActivity.class);
+                                                imageTranslator.putExtra("RESULT", resultText);
+                                                startActivity(imageTranslator);
                                             }
 
                                         })
@@ -139,14 +132,15 @@ public class ImageToTextActivity extends AppCompatActivity {
                                                     public void onFailure(@NonNull Exception e) {
                                                         Log.i("FAILURE", e.toString());
                                                         e.printStackTrace();
+                                                        finish();
                                                     }
                                                 });
-                        super.onCaptureSuccess(image,rotationDegrees);
                     }
 
                     @Override
                     public void onError(@NonNull ImageCapture.ImageCaptureError imageCaptureError, @NonNull String message, @Nullable Throwable cause) {
                         super.onError(imageCaptureError, message, cause);
+                        finish();
                     }
                 });
             }
