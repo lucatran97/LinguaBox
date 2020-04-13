@@ -149,6 +149,7 @@ public class TranslatorActivity extends AppCompatActivity implements AdapterView
      */
     public void onSpeechButtonClicked() {
         try {
+            long time = System.currentTimeMillis();
             SpeechTranslationConfig config = SpeechTranslationConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
 
             assert(config != null);
@@ -167,6 +168,7 @@ public class TranslatorActivity extends AppCompatActivity implements AdapterView
             //        register for the event (see full samples)
             TranslationRecognitionResult result = task.get();
             assert (result != null);
+            Log.i("SPEECH RESPONSE TIME", String.valueOf(System.currentTimeMillis()-time));
 
             if (result.getReason() == ResultReason.TranslatedSpeech) {
                 String rawResult = result.toString();

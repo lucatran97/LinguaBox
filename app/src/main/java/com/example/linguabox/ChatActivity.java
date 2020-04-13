@@ -105,6 +105,7 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
      * @param view
      */
     public void sendMessage(View view) {
+        long time = System.currentTimeMillis();
         String message = editText.getText().toString();
         if (message.length() > 0) {
             displayMessage(message, true);
@@ -113,6 +114,7 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
             Future<Message> result = es.submit(new SendRun(message));
             try {
                 displayMessage(result.get());
+                Log.i("CHAT RESPONSE TIME", String.valueOf(System.currentTimeMillis()-time));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -231,6 +233,7 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
         //listening.show();
         TextView txt = (TextView) this.findViewById(R.id.editText); // 'hello' is the ID of your text view
         Log.w("Language Code", "Language Code = " + languageSpeech);
+        long time = System.currentTimeMillis();
         try {
             SpeechTranslationConfig config = SpeechTranslationConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
 
@@ -249,6 +252,7 @@ public class ChatActivity extends AppCompatActivity implements HelperDialogFragm
             // Note: this will block the UI thread, so eventually, you want to
             //        register for the event (see full samples)
             TranslationRecognitionResult result = task.get();
+            Log.i("SPEECH RESPONSE TIME", String.valueOf(System.currentTimeMillis()-time));
             assert (result != null);
 
             if (result.getReason() == ResultReason.TranslatedSpeech) {
