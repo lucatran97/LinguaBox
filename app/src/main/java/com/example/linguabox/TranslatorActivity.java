@@ -61,7 +61,7 @@ public class TranslatorActivity extends AppCompatActivity implements AdapterView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.translator_machine);
-        int requestCode = 5; // unique code for the permission request
+        int requestCode = 6; // unique code for the permission request
         ActivityCompat.requestPermissions(TranslatorActivity.this, new String[]{RECORD_AUDIO, INTERNET}, requestCode);
         lan_list_1 = findViewById(R.id.language_list_1);
         lan_list_2 = findViewById(R.id.language_list_2);
