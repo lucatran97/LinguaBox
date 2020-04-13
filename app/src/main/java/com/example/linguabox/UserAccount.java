@@ -17,13 +17,22 @@ public class UserAccount {
     private static String userLastName = null;
     private static ArrayList<LanguageProgress> userProgress = new ArrayList<>();
 
-
+    /**
+     * This function creates a new account for the user
+     * @param email user's email
+     * @param givenName user First Name
+     * @param lastName user Last Name
+     */
     public static void setAccount(String email, String givenName, String lastName){
         userEmail = email;
         userGivenName = givenName;
         userLastName = lastName;
     }
 
+    /**
+     * This functions sets up the language learning progress for the user.
+     * @param array
+     */
     public static void setProgress(JSONArray array){
         userProgress = new ArrayList<>();
         for (int i = 0; i< array.length(); i++){
@@ -39,6 +48,11 @@ public class UserAccount {
         return userProgress;
     }
 
+    /**
+     * This function handles sign out.
+     * @param context the app's context at the time of sign out
+     * @param caller caller that is used to sign in
+     */
     public static void signOut(Context context, Activity caller){
         userEmail = null;
         userGivenName = null;
@@ -61,6 +75,11 @@ public class UserAccount {
         return userLastName;
     }
 
+    /**
+     * This function verifies the user's sign in. Uses app's context and a caller.
+     * @param context App's context
+     * @param caller Caller to call for sign in.
+     */
     public static void verifySignIn(Context context, Activity caller){
         if (userEmail == null){
             Toast.makeText(context, "You have signed out. Please sign in again.", Toast.LENGTH_LONG).show();

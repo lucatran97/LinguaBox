@@ -69,12 +69,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    /**
+     * This function starts automatically when users open the app to get the users to sign in.
+     */
     private void signIn() {
         spinner.setVisibility(View.VISIBLE);
         Intent signInIntent = client.getSignInIntent();
         startActivityForResult(signInIntent, SIGNED_IN);
     }
 
+    /**
+     * This function sets the user up for an Activity Result
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -85,6 +95,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This function handles Sign In results.
+     * @param completedTask
+     */
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
