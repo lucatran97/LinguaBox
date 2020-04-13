@@ -7,6 +7,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+
+/**
+ * This class extends BaseAdapter and is used to display and select language.
+ */
 public class LanguageSelectAdapter extends BaseAdapter {
     Context context;
     String[] countryNames;

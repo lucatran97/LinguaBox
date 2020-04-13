@@ -89,7 +89,10 @@ public class MessageAdapter extends BaseAdapter {
 
     }
 
-    class MessageViewHolder {
+/**
+ * This object holds the message. Includes user avatar, user name, and the message itself.
+ */
+class MessageViewHolder {
         public View avatar;
         public TextView name;
         public TextView messageBody;

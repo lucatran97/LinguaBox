@@ -7,6 +7,7 @@ import androidx.core.app.ActivityCompat;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -80,6 +81,8 @@ public class TranslatorActivity extends AppCompatActivity implements AdapterView
         listenButton1 = findViewById(R.id.listenButton1);
         listenButton2 = findViewById(R.id.listenButton2);
 
+        output.setMovementMethod(new ScrollingMovementMethod());
+
         listenButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,6 +113,11 @@ public class TranslatorActivity extends AppCompatActivity implements AdapterView
         });
     }
 
+    /**
+     * This function handles events when users want to use the mic to record voice speech
+     * @param text the text from the user
+     * @param language_code language user uses
+     */
     public void onMicButtonClicked(String text, String language_code){
         if(text.trim().length()>0) {
             speechConfig = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
@@ -135,6 +143,9 @@ public class TranslatorActivity extends AppCompatActivity implements AdapterView
         }
     }
 
+    /**
+     * This function handles when speech button is clicked
+     */
     public void onSpeechButtonClicked() {
         try {
             SpeechTranslationConfig config = SpeechTranslationConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
@@ -173,6 +184,11 @@ public class TranslatorActivity extends AppCompatActivity implements AdapterView
         }
     }
 
+
+    /**
+     * This function handles events when user click on the translate button on the Translation feature.
+     * @param v The view of the Translate Button
+     */
     public void TranslateClick(View v) {
         inputText = input.getText().toString();
         language_from = lan_list_1.getSelectedItem().toString();
