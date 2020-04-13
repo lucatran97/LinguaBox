@@ -112,6 +112,7 @@ public class ImageToTextActivity extends AppCompatActivity {
                                 FirebaseVisionImage.fromMediaImage(mediaImage, rotation);
                         FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
                                 .getOnDeviceTextRecognizer();
+                        super.onCaptureSuccess(image, rotationDegrees);
                         Task<FirebaseVisionText> result =
                                 detector.processImage(vImage)
                                         .addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
@@ -200,7 +201,7 @@ public class ImageToTextActivity extends AppCompatActivity {
         return true;
     }
 
-    private int degreesToFirebaseRotation(int degrees) {
+    int degreesToFirebaseRotation(int degrees) {
         switch (degrees) {
             case 0:
                 return FirebaseVisionImageMetadata.ROTATION_0;

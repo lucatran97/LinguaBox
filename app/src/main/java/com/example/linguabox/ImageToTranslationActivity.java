@@ -77,6 +77,7 @@ public class ImageToTranslationActivity extends AppCompatActivity implements Ada
                                     recognizedLanguage.append(" " + languageCode);
                                 } else {
                                     Log.i("ERROR", "Can't identify language.");
+                                    recognizedLanguage.append(" en");
 
                                 }
                             }

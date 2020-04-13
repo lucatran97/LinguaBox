@@ -29,6 +29,7 @@ import com.microsoft.cognitiveservices.speech.translation.SpeechTranslationConfi
 import com.microsoft.cognitiveservices.speech.translation.TranslationRecognitionResult;
 import com.microsoft.cognitiveservices.speech.translation.TranslationRecognizer;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -690,7 +691,7 @@ public class TranslatorActivity extends AppCompatActivity implements AdapterView
 
         @Override
         public String call() throws Exception {
-            String jsonToSend = "{\"message\": \""+inputText+"\", \"language_to\": \""+ language_to_code +"\", \"language_from\": \""+ language_from_code +"\"}";
+            String jsonToSend = "{\"message\": \""+ StringEscapeUtils.escapeJava(inputText) +"\", \"language_to\": \""+ language_to_code +"\", \"language_from\": \""+ language_from_code +"\"}";
 
             Log.w ("2", jsonToSend);
             Log.w("2.1", "input text: \""+inputText+"\" ");
