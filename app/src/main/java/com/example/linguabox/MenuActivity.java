@@ -9,13 +9,9 @@ import java.util.Calendar;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MenuActivity extends AppCompatActivity {
-    String name;
-    String email;
+    String name, email;
     TextView welcomeDisplay;
-    Button chat;
-    Button translate;
-    Button profile;
-    Button signOut;
+    Button chat, translate, profile, signOut, imageTranslation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +27,7 @@ public class MenuActivity extends AppCompatActivity {
         translate = (Button) findViewById(R.id.menu_translate_button);
         profile = (Button) findViewById(R.id.menu_profile_button);
         signOut = (Button) findViewById(R.id.menu_sign_out_button);
+        imageTranslation = (Button) findViewById(R.id.menu_image_translation);
 
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,6 +44,7 @@ public class MenuActivity extends AppCompatActivity {
                 startActivity(translator);
             }
         });
+
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,6 +57,14 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 UserAccount.signOut(getApplicationContext(), MenuActivity.this);
+            }
+        });
+
+        imageTranslation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent imageRecognition = new Intent(getApplicationContext(), ImageMethodActivity.class);
+                startActivity(imageRecognition);
             }
         });
     }

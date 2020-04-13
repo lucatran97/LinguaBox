@@ -97,4 +97,8 @@
     <string name="menu_profile_refresh">Refresh</string>
     <string name="input_text_here">Input text here</string>
     <string name="translated_text_will_be_displayed_here">Translated text will be displayed here</string>
+    <string name="recognized_language">Recognized Language:</string>
+    <string name="menu_image_button">Image Translation</string>
+    <string name="camera_method">Capture a Photo</string>
+    <string name="gallery_method">Select From Gallery</string>
 </resources>
