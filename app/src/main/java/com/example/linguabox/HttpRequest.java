@@ -55,7 +55,7 @@ public class HttpRequest {
      * @throws JSONException error in JSON response object
      */
     public static String publicPostGetString(String url, String json) throws IOException, JSONException {
-        JSONObject response =  post(url,json);
+        JSONObject response =  post(url, json);
         Log.e("RESPONSE", response.toString());
         String translation = response.getString("translation");
         return  translation;

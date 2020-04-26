@@ -46,6 +46,17 @@
         android:text="@string/menu_profile_button"
         app:layout_constraintLeft_toLeftOf="@+id/guideline13"
         app:layout_constraintRight_toRightOf="@id/guideline14"
+        app:layout_constraintTop_toTopOf="@+id/guideline18" />
+
+    <Button
+        android:id="@+id/menu_image_translation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/menu_image_button"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline13"
+        app:layout_constraintRight_toRightOf="@id/guideline14"
         app:layout_constraintTop_toTopOf="@+id/guideline10" />
 
     <TextView
@@ -132,4 +143,11 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.65" />
+
+    <androidx.constraintlayout.widget.Guideline
+    android:id="@+id/guideline18"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    app:layout_constraintGuide_percent="0.55" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "90843533698",
+    "firebase_url": "https://lingua-267020.firebaseio.com",
+    "project_id": "lingua-267020",
+    "storage_bucket": "lingua-267020.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:90843533698:android:0e13c2f09e816ec7d5bf9b",
+        "android_client_info": {
+          "package_name": "com.example.linguabox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "90843533698-27eghb21rqh516qt7l5eql579hijfht1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.linguabox",
+            "certificate_hash": "7ddfbc6e82b5c19b92bfa49c6cf8d29f5c1c027a"
+          }
+        },
+        {
+          "client_id": "90843533698-msfuogcassq4qjumql3req6fd4je3nek.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiVzwY4I4jcONNRko7Xl4bAtoywSStZBg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "90843533698-bv5rle0jacfi3sqvo13o9a8nv4i6fld9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

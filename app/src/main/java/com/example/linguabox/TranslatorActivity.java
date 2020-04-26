@@ -29,6 +29,7 @@ import com.microsoft.cognitiveservices.speech.translation.SpeechTranslationConfi
 import com.microsoft.cognitiveservices.speech.translation.TranslationRecognitionResult;
 import com.microsoft.cognitiveservices.speech.translation.TranslationRecognizer;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -62,7 +63,7 @@ public class TranslatorActivity extends AppCompatActivity implements AdapterView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.translator_machine);
-        int requestCode = 5; // unique code for the permission request
+        int requestCode = 6; // unique code for the permission request
         ActivityCompat.requestPermissions(TranslatorActivity.this, new String[]{RECORD_AUDIO, INTERNET}, requestCode);
         lan_list_1 = findViewById(R.id.language_list_1);
         lan_list_2 = findViewById(R.id.language_list_2);
@@ -148,6 +149,7 @@ public class TranslatorActivity extends AppCompatActivity implements AdapterView
      */
     public void onSpeechButtonClicked() {
         try {
+            long time = System.currentTimeMillis();
             SpeechTranslationConfig config = SpeechTranslationConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
 
             assert(config != null);
@@ -166,6 +168,7 @@ public class TranslatorActivity extends AppCompatActivity implements AdapterView
             //        register for the event (see full samples)
             TranslationRecognitionResult result = task.get();
             assert (result != null);
+            Log.i("SPEECH RESPONSE TIME", String.valueOf(System.currentTimeMillis()-time));
 
             if (result.getReason() == ResultReason.TranslatedSpeech) {
                 String rawResult = result.toString();
@@ -690,7 +693,7 @@ public class TranslatorActivity extends AppCompatActivity implements AdapterView
 
         @Override
         public String call() throws Exception {
-            String jsonToSend = "{\"message\": \""+inputText+"\", \"language_to\": \""+ language_to_code +"\", \"language_from\": \""+ language_from_code +"\"}";
+            String jsonToSend = "{\"message\": \""+ StringEscapeUtils.escapeJava(inputText) +"\", \"language_to\": \""+ language_to_code +"\", \"language_from\": \""+ language_from_code +"\"}";
 
             Log.w ("2", jsonToSend);
             Log.w("2.1", "input text: \""+inputText+"\" ");
