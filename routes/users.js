@@ -2,6 +2,9 @@ var express = require('express');
 var router = express.Router();
 var linguamongo = require('../linguamongo');
 
+/**
+ * Handles Sign In GET requests
+ */
 router.get('/', async function(req, res, next){
   res.setHeader('Content-Type', 'application/json');
   if(req.query!=undefined&&req.query.email!=undefined){
@@ -11,6 +14,9 @@ router.get('/', async function(req, res, next){
   }
 });
 
+/**
+ * Handles Sign In POST requests
+ */
 router.post('/', async function(req, res, next){
   res.setHeader('Content-Type', 'application/json');
   if((req.body!=undefined)&&(req.body.email!=undefined)){

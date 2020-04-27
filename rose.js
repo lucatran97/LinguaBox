@@ -3,6 +3,9 @@ const LANGUAGE_CODE = 'en-US'
 var microsoftTranslator = require('./microsoft');
 var linguamongo = require('./linguamongo');
 
+/**
+ * Handles chatbot operation
+ */
 class DialogFlow {
 	constructor (level) {
 		this.projectId = 'sa1-lmtvhu';
@@ -62,7 +65,7 @@ class DialogFlow {
 		};
 		try {
 			let responses = await this.sessionClient.detectIntent(request);		
-			console.log('DialogFlow.sendTextMessageToDialogFlow: Detected intent');
+			//console.log('DialogFlow.sendTextMessageToDialogFlow: Detected intent');
 			//console.log(responses);
 			return responses;
 		}
@@ -73,6 +76,9 @@ class DialogFlow {
 	}
 }
 
+/**
+ * Handles input flow in server
+ */
 var inputHandler = {
 	processChat: async function(message, sessionId, language, res){
 		var opts = {stage: "PRE", session: sessionId, language: language};
@@ -90,7 +96,7 @@ var inputHandler = {
 		microsoftTranslator.translate(message, opts, res);
 	},
 	onPostTranslateSuccess: async function(rMessage, rTranslation, res){
-		res.send(JSON.stringify({message: rMessage, translation: rTranslation}));
+		res.send(JSON.stringify({status: "success", message: rMessage, translation: rTranslation}));
 	}
 }
 module.exports.inputHandler = inputHandler;

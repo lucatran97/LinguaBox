@@ -1,6 +1,6 @@
 const request = require('supertest')
 const app = require('../app')
-describe('Sign Tests Case 1', () => {
+describe('SignIn Test Case 1', () => {
   it('Status should be success because input parameter is correct', async () => {
     const res = await request(app)
       .post('/users')

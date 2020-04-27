@@ -2,7 +2,9 @@ var express = require('express');
 var router = express.Router();
 const microsoftTranslator = require('../microsoft');
 
-/*handle chat post request*/
+/**
+ * Handles translate GET requests
+ */
 router.get('/', async function(req, res, next){
     res.setHeader('Content-Type', 'application/json');
     if(req.query!=undefined&&req.query.message!=undefined&&req.query.language_to!=undefined&&req.query.language_from!=undefined){
@@ -13,6 +15,9 @@ router.get('/', async function(req, res, next){
     }
 });
 
+/**
+ * Handles translate POST requests
+ */
 router.post('/', async function(req, res, next){
     res.setHeader('Content-Type', 'application/json');
     if((req.body!=undefined)&&(req.body.message!=undefined)&&(req.body.language_to!=undefined)&&(req.body.language_from!=undefined)){

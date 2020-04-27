@@ -3,7 +3,9 @@ var router = express.Router();
 const rose = require('../rose');
 const linguamongo = require ('../linguamongo');
 
-/*handle chat post request*/
+/**
+ * Handles chat GET requests
+ */
 router.get('/', async function(req, res, next){
     res.setHeader('Content-Type', 'application/json');
     if(req.query!=undefined&&req.query.message!=undefined&&req.query.email!=undefined&&req.query.language!=undefined){
@@ -13,6 +15,9 @@ router.get('/', async function(req, res, next){
     }
 });
 
+/**
+ * Handles chat POST requests
+ */
 router.post('/', async function(req, res, next){
     res.setHeader('Content-Type', 'application/json');
     if((req.body!=undefined)&&(req.body.message!=undefined)&&(req.body.email!=undefined)&&(req.body.language!=undefined)){
