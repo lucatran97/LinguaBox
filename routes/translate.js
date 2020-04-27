@@ -9,7 +9,7 @@ router.get('/', async function(req, res, next){
         var opts = {stage: "NORM", language_to: req.query.language_to, language_from: req.query.language_from};
         microsoftTranslator.translate(encodeURI(req.query.message), opts, res);
     } else {
-        res.send(JSON.stringify({message: "Cannot recognize GET request. Maybe missing one of the parameters: message, language_to and/or language_from"}));
+        res.send(JSON.stringify({status: "failure", message: "Cannot recognize GET request. Maybe missing one of the parameters: message, language_to and/or language_from"}));
     }
 });
 
@@ -19,7 +19,7 @@ router.post('/', async function(req, res, next){
         var opts = {stage: "NORM", language_to: req.body.language_to, language_from: req.body.language_from};
         microsoftTranslator.translate(req.body.message, opts, res);
     } else {
-        res.send(JSON.stringify({message: "Cannot recognize POST request. Maybe missing in request body: message, language_to and/or language_from"}));
+        res.send(JSON.stringify({status: "failure", message: "Cannot recognize POST request. Maybe missing in request body: message, language_to and/or language_from"}));
     }
 });
 

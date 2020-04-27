@@ -7,7 +7,7 @@ router.get('/', async function(req, res, next){
   if(req.query!=undefined&&req.query.email!=undefined){
       linguamongo.dbCRUD.signInHandler(req.query.email.replace(/["]+/g, ''), res);
   } else {
-      res.send(JSON.stringify({message: "Cannot recognize GET request: Email missing or invalid."}));
+      res.send(JSON.stringify({status: "failure", message: "Cannot recognize GET request: Email missing or invalid."}));
   }
 });
 
@@ -16,7 +16,7 @@ router.post('/', async function(req, res, next){
   if((req.body!=undefined)&&(req.body.email!=undefined)){
       linguamongo.dbCRUD.signInHandler(req.body.email.replace(/["]+/g, ''), res);
   } else {
-      res.send(JSON.stringify({message: "Cannot recognize POST request: Email missing or invalid."}));
+      res.send(JSON.stringify({status: "failure", message: "Cannot recognize POST request: Email missing or invalid."}));
   }
 });
 

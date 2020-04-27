@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "server.js",
-    "test": "jest"
+    "test": "jest --detectOpenHandles"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",

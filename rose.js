@@ -34,12 +34,16 @@ class DialogFlow {
 	}
 
 	async chatbotQuery(textMessage, sessionId, language, sRes){
-		let responses = await this.sendTextMessageToDialogFlow(decodeURI(textMessage), sessionId);
-		if((responses!=undefined)&&(responses[0].queryResult.fulfillmentText!=undefined)){
-			//console.log(responses);
-			inputHandler.onChatbotSuccess(responses[0].queryResult.fulfillmentText, sessionId, language, sRes);
+		if(textMessage.length >= 256){
+			sRes.send(JSON.stringify({status: "failure", message: 'Text message should not be more than 256 characters.'}));
 		} else {
-			sRes.send(JSON.stringify({message: 'Problem with LinguaBox server and/or chatbot connection.'})); 
+			let responses = await this.sendTextMessageToDialogFlow(decodeURI(textMessage), sessionId);
+			if((responses!=undefined)&&(responses[0].queryResult.fulfillmentText!=undefined)){
+				//console.log(responses);
+				inputHandler.onChatbotSuccess(responses[0].queryResult.fulfillmentText, sessionId, language, sRes);
+			} else {
+				sRes.send(JSON.stringify({status: "failure", message: 'Problem with LinguaBox server and/or chatbot connection.'})); 
+			}
 		}
 	}
 
@@ -72,15 +76,12 @@ class DialogFlow {
 var inputHandler = {
 	processChat: async function(message, sessionId, language, res){
 		var opts = {stage: "PRE", session: sessionId, language: language};
-		console.log("here");
 		microsoftTranslator.translate(message, opts, res);
 	},
 	onPreTransateSuccess: async function(message, sessionId, language, res){
-		console.log("here2");
 		linguamongo.dbCRUD.updateLanguageProgress(message, sessionId, language, res);
 	},
 	onQuerySuccess: async function (message, sessionId, language, res, level){
-		console.log("here3");
 		var df = new DialogFlow(level);
 		df.chatbotQuery(message, sessionId, language, res);
 	},
