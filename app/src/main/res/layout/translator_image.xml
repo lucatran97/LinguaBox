@@ -25,6 +25,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.626" />
 
+
+
     <Button
         android:id="@+id/translate_button"
         android:layout_width="wrap_content"
@@ -62,6 +64,31 @@
         app:layout_constraintTop_toBottomOf="@+id/input"
         app:layout_constraintStart_toStartOf="@id/input"/>
 
+    <ImageButton
+        android:id="@+id/listenButton3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:maxWidth="50dp"
+        android:maxHeight="50dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/speaker"
+        app:layout_constraintTop_toBottomOf="@+id/input"
+        app:layout_constraintEnd_toEndOf="@+id/input"/>
+
+    <ImageButton
+        android:id="@+id/listenButton4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="19dp"
+        android:adjustViewBounds="true"
+        android:maxWidth="50dp"
+        android:maxHeight="50dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/speaker"
+        app:layout_constraintBottom_toTopOf="@+id/output_scroll"
+        app:layout_constraintEnd_toEndOf="@+id/output_scroll" />
+
     <ScrollView
         android:id="@+id/output_scroll"
         android:layout_width="0dp"
@@ -74,6 +101,7 @@
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintVertical_bias="0.909">
+
 
     <LinearLayout
         android:layout_width="match_parent"

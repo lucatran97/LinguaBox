@@ -8,6 +8,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -21,6 +23,13 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage;
 import com.google.firebase.ml.naturallanguage.languageid.FirebaseLanguageIdentification;
+import com.microsoft.cognitiveservices.speech.ResultReason;
+import com.microsoft.cognitiveservices.speech.SpeechConfig;
+import com.microsoft.cognitiveservices.speech.SpeechSynthesisResult;
+import com.microsoft.cognitiveservices.speech.SpeechSynthesizer;
+import com.microsoft.cognitiveservices.speech.translation.SpeechTranslationConfig;
+import com.microsoft.cognitiveservices.speech.translation.TranslationRecognitionResult;
+import com.microsoft.cognitiveservices.speech.translation.TranslationRecognizer;
 
 import org.json.JSONException;
 
@@ -40,11 +49,19 @@ public class ImageToTranslationActivity extends AppCompatActivity implements Ada
     ArrayAdapter lan_Adapter;
     String language_to, language_to_code, language_from;
     String language_from_code = "en";
+    Boolean translateClicked = false;
     EditText input;
     TextView recognizedLanguage, output;
     String translationString;
     private ExecutorService es;
     Button translateButton;
+    ImageButton listenButton3;
+    ImageButton listenButton4;
+
+    String speechSubscriptionKey = "9d1cb6dc1aff4b6ab5ab311b84f642a5";
+    String serviceRegion = "eastus";
+    private SpeechConfig speechConfig;
+    private SpeechSynthesizer synthesizer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,6 +83,11 @@ public class ImageToTranslationActivity extends AppCompatActivity implements Ada
         lan_list_2.setAdapter(lan_Adapter);
         lan_list_2.setOnItemSelectedListener(this);
         translateButton = findViewById(R.id.translate_button);
+
+        listenButton3 = findViewById(R.id.listenButton3);
+        listenButton4 = findViewById(R.id.listenButton4);
+
+
         FirebaseLanguageIdentification languageIdentifier =
                 FirebaseNaturalLanguage.getInstance().getLanguageIdentification();
         languageIdentifier.identifyLanguage(input.getText().toString())
@@ -97,6 +119,23 @@ public class ImageToTranslationActivity extends AppCompatActivity implements Ada
             public void onClick(View v) {
 
                 TranslateClick(v);
+            }
+        });
+
+        listenButton3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(translateClicked)
+                    onMicButtonClicked(input.getText().toString(), language_from);
+
+            }
+        });
+
+        listenButton4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(translateClicked)
+                    onMicButtonClicked(output.getText().toString(), language_to);
             }
         });
     }
@@ -560,6 +599,7 @@ public class ImageToTranslationActivity extends AppCompatActivity implements Ada
             e.printStackTrace();
         }
         output.setText(translationString);
+        translateClicked = true;
     }
 
     /**
@@ -583,4 +623,31 @@ public class ImageToTranslationActivity extends AppCompatActivity implements Ada
             return null;
         }
     }
+
+    public void onMicButtonClicked(String text, String language_code){
+        if(text.trim().length()>0) {
+            speechConfig = SpeechConfig.fromSubscription(speechSubscriptionKey, serviceRegion);
+            assert (speechConfig != null);
+            speechConfig.setSpeechSynthesisLanguage(language_code);
+            synthesizer = new SpeechSynthesizer(speechConfig);
+            assert (synthesizer != null);
+            try {
+                // Note: this will block the UI thread, so eventually, you want to register for the event
+                SpeechSynthesisResult result = synthesizer.SpeakText(text);
+                assert (result != null);
+
+                if (result.getReason() == ResultReason.SynthesizingAudioCompleted) {
+                    Log.w("STATUS", "SUCCESS");
+                } else if (result.getReason() == ResultReason.Canceled) {
+                    Log.w("STATUS", "CANCELED");
+                }
+                result.close();
+            } catch (Exception ex) {
+                Log.e("SpeechSDKDemo", "unexpected " + ex.getMessage());
+                assert (false);
+            }
+        }
+    }
+
+
 }
