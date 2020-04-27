@@ -4,6 +4,7 @@ const uri = "mongodb+srv://trung_nguyen:linguabox@linguabox-no2v7.azure.mongodb.
 const client = new MongoClient(uri, { useNewUrlParser: true });
 const rose = require('./rose');
 
+//Determine language from code for database
 var dict = {};
 dict['es'] = "Spanish";
 dict['de'] = "German";
@@ -16,6 +17,9 @@ dict['it'] = "Italian";
 dict['ja'] = "Japanese";
 dict['ru'] = "Russian";
 
+/**
+ * Handles database CRUD operations
+ */
 var dbCRUD = {
     createListing: async function (newListing, collection, res){
         try {
@@ -36,7 +40,6 @@ var dbCRUD = {
             const progressArray = [];
             client.db("linguadb").collection("progress").find({ user_id: email }).toArray( function(err, result) {
                 if (err) throw err;
-                console.log(result);
                 res.send(JSON.stringify({status: "success", progress: result}));
               });
         } catch (err) {
@@ -50,9 +53,6 @@ var dbCRUD = {
             try{
                 if(!isConnected()){
                     await client.connect();
-                    console.log("Not connected. New connection now...");
-                } else {
-                    console.log("Already connected");
                 }
                 const result = await client.db("linguadb").collection("users")
                                     .findOne({ user_id: email });
@@ -81,9 +81,6 @@ var dbCRUD = {
                 try{
                     if(!isConnected()){
                         await client.connect();
-                        console.log("Not connected. New connection now...");
-                    } else {
-                        console.log("Already connected");
                     }
                     var result = await client.db("linguadb").collection("progress")
                                         .findOne(myQuery);
@@ -125,10 +122,10 @@ var dbCRUD = {
                             current_streak: c_streak,
                             longest_streak: l_streak
                         }};
-                        console.log(newValues);
+                        //console.log(newValues);
                         client.db("linguadb").collection("progress").updateOne(myQuery, newValues, function(err, res) {
                             if (err) throw err;
-                            console.log("1 document updated");
+                            //console.log("1 document updated");
                         });
                     } else {
                         let newListing = {
@@ -155,6 +152,10 @@ var dbCRUD = {
     }
 }
 
+/**
+ * Helper function for email validation
+ * @param {*} email 
+ */
 function validateEmail(email) {
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
       return (true);
@@ -162,19 +163,22 @@ function validateEmail(email) {
       return (false);
 }
 
+/**
+ * Helper function to check for existing MongoDB client
+ */
 function isConnected() {
     return !!client && !!client.topology && client.topology.isConnected()
 }
 
+/**
+ * Helper function to determine consecutive days 
+ */
 function compareDate(previousDate, date_ob){
-    if(previousDate.getTime()+86400000<date_ob.getTime()){ 
-        console.log("Two dates are more than a day apart");
+    if(previousDate.getTime()+86400000<date_ob.getTime()){
         return -1;
     } else if (previousDate.getDate()!=date_ob.getDate()){
-        console.log("Two dates are consecutive");
         return 1;
     } else {
-        console.log("Two dates are on the same day");
         return 0;
     }
 }

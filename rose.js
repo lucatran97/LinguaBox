@@ -3,6 +3,9 @@ const LANGUAGE_CODE = 'en-US'
 var microsoftTranslator = require('./microsoft');
 var linguamongo = require('./linguamongo');
 
+/**
+ * Handles chatbot operation
+ */
 class DialogFlow {
 	constructor (level) {
 		this.projectId = 'sa1-lmtvhu';
@@ -34,12 +37,16 @@ class DialogFlow {
 	}
 
 	async chatbotQuery(textMessage, sessionId, language, sRes){
-		let responses = await this.sendTextMessageToDialogFlow(decodeURI(textMessage), sessionId);
-		if((responses!=undefined)&&(responses[0].queryResult.fulfillmentText!=undefined)){
-			//console.log(responses);
-			inputHandler.onChatbotSuccess(responses[0].queryResult.fulfillmentText, sessionId, language, sRes);
+		if(textMessage.length >= 256){
+			sRes.send(JSON.stringify({status: "failure", message: 'Text message should not be more than 256 characters.'}));
 		} else {
-			sRes.send(JSON.stringify({message: 'Problem with LinguaBox server and/or chatbot connection.'})); 
+			let responses = await this.sendTextMessageToDialogFlow(decodeURI(textMessage), sessionId);
+			if((responses!=undefined)&&(responses[0].queryResult.fulfillmentText!=undefined)){
+				//console.log(responses);
+				inputHandler.onChatbotSuccess(responses[0].queryResult.fulfillmentText, sessionId, language, sRes);
+			} else {
+				sRes.send(JSON.stringify({status: "failure", message: 'Problem with LinguaBox server and/or chatbot connection.'})); 
+			}
 		}
 	}
 
@@ -58,7 +65,7 @@ class DialogFlow {
 		};
 		try {
 			let responses = await this.sessionClient.detectIntent(request);		
-			console.log('DialogFlow.sendTextMessageToDialogFlow: Detected intent');
+			//console.log('DialogFlow.sendTextMessageToDialogFlow: Detected intent');
 			//console.log(responses);
 			return responses;
 		}
@@ -69,18 +76,18 @@ class DialogFlow {
 	}
 }
 
+/**
+ * Handles input flow in server
+ */
 var inputHandler = {
 	processChat: async function(message, sessionId, language, res){
 		var opts = {stage: "PRE", session: sessionId, language: language};
-		console.log("here");
 		microsoftTranslator.translate(message, opts, res);
 	},
 	onPreTransateSuccess: async function(message, sessionId, language, res){
-		console.log("here2");
 		linguamongo.dbCRUD.updateLanguageProgress(message, sessionId, language, res);
 	},
 	onQuerySuccess: async function (message, sessionId, language, res, level){
-		console.log("here3");
 		var df = new DialogFlow(level);
 		df.chatbotQuery(message, sessionId, language, res);
 	},
@@ -89,7 +96,7 @@ var inputHandler = {
 		microsoftTranslator.translate(message, opts, res);
 	},
 	onPostTranslateSuccess: async function(rMessage, rTranslation, res){
-		res.send(JSON.stringify({message: rMessage, translation: rTranslation}));
+		res.send(JSON.stringify({status: "success", message: rMessage, translation: rTranslation}));
 	}
 }
 module.exports.inputHandler = inputHandler;
